@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
 import propTypes from 'prop-types';
+import  { Redirect } from 'react-router-dom'
 import Validator from 'validator';
-import { Form, Button } from 'semantic-ui-react';
+import { Form, Button, Message } from 'semantic-ui-react';
+
+import {connect} from 'react-redux';
+import {login} from '../../actions/Auth';
 
 import InlineError from '../messages/InlineError';
 
@@ -30,15 +34,19 @@ class LoginForm extends Component {
 
         if(errors) this.setState({errors});
 
-        if(Object.keys(errors).length > 0)
+        if(Object.keys(errors).length !== 0)
             return;
 
-            this.props.submit(this.state.data);
-
-        
-
+        this.setState({loading:true});
+        this.props.login(this.state.data)
+        .then(()=> <Redirect to='/'/> )
+        .catch(err=>
+            this.setState({
+                errors:err.response.data.errors,
+                loading:false
+            })
+        );
     }
-
 
     validate = (data) =>{
 
@@ -55,7 +63,16 @@ class LoginForm extends Component {
     const {errors,data} = this.state;
 
     return (
+
         <Form onSubmit={this.onSubmit}>
+
+            { errors.global && (
+                <Message negative>
+                    <Message.Header>server error</Message.Header>
+                    <p>{errors.global}</p>
+                </Message>
+            )}
+
             {errors.email && <InlineError text={errors.email} />}
             <Form.Field error={!!errors.email}>
                 <label htmlFor="email">Email</label>
@@ -88,7 +105,7 @@ class LoginForm extends Component {
 
 LoginForm.propTypes = {
 
-    submit:propTypes.func.isRequired 
+    login: propTypes.func.isRequired 
 }
 
-export default LoginForm;
+export default connect(null,{login})(LoginForm);
