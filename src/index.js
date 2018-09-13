@@ -19,6 +19,7 @@ const store = createStore(
     composeWithDevTools(applyMiddleware(thunk))
 )
 
+// if user is logged in local storage
 if(localStorage.bookwormJWT){
     const user = {token: localStorage.bookwormJWT};
     store.dispatch(userLoggedIn(user));
