@@ -28,7 +28,7 @@ if(localStorage.bookwormJWT){
 ReactDOM.render(
     <BrowserRouter>
         <Provider store={store}>
-            <App />
+            <App/>
         </Provider>
     </BrowserRouter>,
     document.getElementById('root')

@@ -3,15 +3,14 @@ import propTypes from 'prop-types';
 import {connect} from 'react-redux';
 import { Redirect } from 'react-router-dom';
 
-
 import Validator from 'validator';
 import { Form, Button } from 'semantic-ui-react';
-
 
 import {login} from '../../actions/Auth';
 
 import ServerError from '../messages/ServerError';
 import InlineError from '../messages/InlineError';
+
 
 class LoginForm extends Component {
  
@@ -22,7 +21,7 @@ class LoginForm extends Component {
         },
         loading:false,
         errors:{},
-        loggedIn:false
+        redirect:false
     }
 
     onChangeInput = e => {
@@ -45,7 +44,7 @@ class LoginForm extends Component {
 
         this.setState({loading:true});
         this.props.login(this.state.data)
-        .then(()=>this.setState({loggedIn:true}))
+        .then(()=>this.setState({redirect:true}))
         .catch(err=>
             this.setState({
                 errors:err.response.data.errors,
@@ -67,8 +66,8 @@ class LoginForm extends Component {
 
     renderRedirect = () => {
        
-        if (this.state.loggedIn) 
-          return <Redirect to="/" />
+        if (this.props.isUserAuthenticated) 
+          return <Redirect to="/dashboard" />
         
     }
 
@@ -122,7 +121,15 @@ class LoginForm extends Component {
 
 LoginForm.propTypes = {
 
+    isUserAuthenticated: propTypes.bool.isRequired,
     login: propTypes.func.isRequired 
+
 }
 
-export default connect(null,{login})(LoginForm);
+function mapStateToProps(state){
+    return{
+       isUserAuthenticated: !!state.user.token 
+    }
+}
+
+export default connect(mapStateToProps,{login})(LoginForm);
