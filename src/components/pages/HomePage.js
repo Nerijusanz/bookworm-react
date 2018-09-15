@@ -8,7 +8,10 @@ const HomePage = (props) => (
     <div>
         <h1>HomePage</h1>
         {props.isUserAuthenticated ? 
-            <button onClick={()=>props.logout()}>logout</button>:<Link to="/login">Login</Link>}
+            <button onClick={()=>props.logout()}>logout</button> : 
+            <p><Link to="/login">Login</Link>
+            <span>or</span>
+            <Link to="/signup">signup</Link></p>}
     </div>
 );
 

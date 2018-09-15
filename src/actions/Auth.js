@@ -20,7 +20,11 @@ export const login = (credentials) => (dispatch) =>
         localStorage.bookwormJWT = user.token;
         dispatch(userLoggedIn(user))
 
-});
+    }
+);
+
+
+
 
 export const logout = () => dispatch => {
     localStorage.removeItem('bookwormJWT');

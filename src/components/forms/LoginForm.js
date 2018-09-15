@@ -1,19 +1,18 @@
 import React, { Component } from 'react';
 import propTypes from 'prop-types';
 import {connect} from 'react-redux';
-import { Redirect } from 'react-router-dom';
 
 import Validator from 'validator';
 import { Form, Button } from 'semantic-ui-react';
 
 import {login} from '../../actions/Auth';
-
 import ServerError from '../messages/ServerError';
 import InlineError from '../messages/InlineError';
 
 
 class LoginForm extends Component {
- 
+
+
     state={
         data:{
             email:'',
@@ -39,20 +38,23 @@ class LoginForm extends Component {
 
         if(errors) this.setState({errors});
 
-        if(Object.keys(errors).length !== 0)
+        if(Object.keys(this.state.errors).length > 0)
             return;
 
+        // validation OK;
+
         this.setState({loading:true});
+
         this.props.login(this.state.data)
-        .then(()=>this.setState({redirect:true}))
+        .then(()=>this.props.history.push("/dashboard"))
         .catch(err=>
             this.setState({
                 errors:err.response.data.errors,
                 loading:false
             })
         );
-    }
 
+    }
 
 
     validate = (data) =>{
@@ -64,56 +66,46 @@ class LoginForm extends Component {
         return errors;
     }
 
-    renderRedirect = () => {
-       
-        if (this.props.isUserAuthenticated) 
-          return <Redirect to="/dashboard" />
-        
-    }
-
 
   render() {
 
-    const {errors,data} = this.state;
+    const {errors,data,loading} = this.state;
 
     return (
 
         <div>
-
-        {this.renderRedirect()}
-
-        <Form onSubmit={this.onSubmit}>
-
             {errors.global && <ServerError text={errors.global} />}
 
-            {errors.email && <InlineError text={errors.email} />}
-            <Form.Field error={!!errors.email}>
-                <label htmlFor="email">Email</label>
-                <input 
-                    type="email" 
-                    id="email" 
-                    name="email" 
-                    placeholder="example@example.com" 
-                    value={data.email}
-                    onChange={this.onChangeInput}
-                />
-            </Form.Field>
+            <Form onSubmit={this.onSubmit} loading={loading}>
 
-            {errors.password && <InlineError text={errors.password} />}
-            <Form.Field error={!!errors.password}>
-                <label htmlFor="password">Password</label>
-                <input 
-                    type="password" 
-                    id="password" 
-                    name="password" 
-                    value={data.password}
-                    onChange={this.onChangeInput}
-                />
-            </Form.Field>
+                {errors.email && <InlineError text={errors.email} />}
+                <Form.Field error={!!errors.email}>
+                    <label htmlFor="email">Email</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        placeholder="example@example.com" 
+                        value={data.email}
+                        onChange={this.onChangeInput}
+                    />
+                </Form.Field>
 
-            <Button primary>login</Button>
+                {errors.password && <InlineError text={errors.password} />}
+                <Form.Field error={!!errors.password}>
+                    <label htmlFor="password">Password</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        value={data.password}
+                        onChange={this.onChangeInput}
+                    />
+                </Form.Field>
 
-        </Form>
+                <Button primary>login</Button>
+
+            </Form>
         </div>
     )
   }
@@ -121,15 +113,12 @@ class LoginForm extends Component {
 
 LoginForm.propTypes = {
 
-    isUserAuthenticated: propTypes.bool.isRequired,
-    login: propTypes.func.isRequired 
-
+    login: propTypes.func.isRequired,
+    history: propTypes.shape({
+        push: propTypes.func.isRequired
+      }).isRequired
+    
 }
 
-function mapStateToProps(state){
-    return{
-       isUserAuthenticated: !!state.user.token 
-    }
-}
 
-export default connect(mapStateToProps,{login})(LoginForm);
+export default connect(null,{login})(LoginForm);
