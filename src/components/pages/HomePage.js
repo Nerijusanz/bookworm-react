@@ -10,6 +10,7 @@ const HomePage = (props) => (
         {props.isUserAuthenticated ? 
             <button onClick={()=>props.logout()}>logout</button> : 
             <p><Link to="/login">Login</Link>
+
             <span>or</span>
             <Link to="/signup">signup</Link></p>}
     </div>
