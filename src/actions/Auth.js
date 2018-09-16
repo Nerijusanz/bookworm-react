@@ -24,9 +24,15 @@ export const login = (credentials) => (dispatch) =>
 );
 
 
-
-
 export const logout = () => dispatch => {
     localStorage.removeItem('bookwormJWT');
     dispatch(userLoggedOut());
+}
+
+export const confirm = (token) => dispatch => {
+    api.user.confirm(token)
+        .then(user=>{
+            localStorage.bookwormJWT = user.token;
+            dispatch(userLoggedIn(user));
+        });
 }
