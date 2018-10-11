@@ -1,12 +1,23 @@
-import React from 'react';
+import React, { Component } from 'react';
 import {Route} from 'react-router-dom';
-import MainRoute from './routes/MainRoute';
+
+import AppRoute from './routes/AppRoute';
+import FlashMessage from './components/messages/flash/FlashMessage';
 
 
-const App = () => (
-  <div className="ui container">
-    <Route component={MainRoute} />
-  </div>
-);
+
+class App extends Component {
+
+
+  render() {
+
+    return (
+    <div className="ui container">
+      <FlashMessage />
+      <Route component={AppRoute} />
+    </div>
+    )
+  }
+}
 
 export default App;

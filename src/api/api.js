@@ -2,14 +2,27 @@ import axios from 'axios';
 
 
 export default{
-    user:{
+    auth:{
         login: (credentials) =>
-            axios.post("/api/auth",{credentials}).then(res=>res.data.user),
-        confirm: (token) =>
-            axios.post("/api/auth/confirmation",{token}).then(res=>res.data.user), 
+            axios.post("/api/auth/login",{credentials}).then(res=>res.data.user),
+        authenticationCheck: () =>
+            axios.post("/api/auth/authentication_check").then(res=>res.data.user),
+        signupConfirmationToken: (token) =>
+            axios.post("/api/auth/signup_confirmation_token",{token}), 
         signup: (user) =>
-            axios.post("/api/users",{user}).then(res=>res.data.user)
-
-       
+            axios.post("/api/auth/signup",{user}),
+        signupUserExists: (email) =>
+            axios.post("/api/auth/signup_user_exists",{email}),
+        forgotPassword: (email) =>
+            axios.post("/api/auth/forgot_password",{email}),
+        resetPasswordToken: (token) =>
+            axios.post("/api/auth/reset_password_token",{token}),
+        resetPassword:(data) => 
+            axios.post("/api/auth/reset_password",{data}),
+        
+    },
+    dashboard:{
+        page:()=>
+            axios.get("/api/dashboard"),
     }
-}
+};

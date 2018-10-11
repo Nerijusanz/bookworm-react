@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
-import LoginForm from '../forms/LoginForm';
+import LoginForm from '../../forms/auth/LoginForm';
+
 
 
 class LoginPage extends Component {
+
+  state={}
 
   render() {
     return (

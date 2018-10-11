@@ -1,0 +1,7 @@
+export const AUTH_LOGGED_IN = 'AUTH_LOGGED_IN';
+export const AUTH_LOGGED_OUT = 'AUTH_LOGGED_OUT';
+export const AUTH_LOADING = 'AUTH_LOADING';
+export const AUTH_ERROR = 'AUTH_ERROR';
+
+export const ADD_FLASH_MESSAGE = "ADD_FLASH_MESSAGE";
+export const DELETE_FLASH_MESSAGE = "DELETE_FLASH_MESSAGE";
