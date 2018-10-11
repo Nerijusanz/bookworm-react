@@ -4,6 +4,11 @@ import api from '../api/api';
 import {
     AUTH_LOGGED_IN,
     AUTH_LOGGED_OUT,
+
+    AUTH_SIGNUP_EMAIL_EXISTS_YES,
+    AUTH_SIGNUP_EMAIL_EXISTS_NO,
+    AUTH_SIGNUP_SUCCESS_YES,
+    AUTH_SIGNUP_SUCCESS_NO,
     AUTH_LOADING,
     AUTH_ERROR
 } from './types';
@@ -36,6 +41,20 @@ export const authError = (errors) => ({
     
 });
 
+export const authSignupEmailExists = (isEmail) => ({
+     
+        type: (isEmail)? AUTH_SIGNUP_EMAIL_EXISTS_YES: AUTH_SIGNUP_EMAIL_EXISTS_NO,
+        payload:isEmail
+
+})
+
+export const authSignup = (status) => ({
+
+    type: (status)? AUTH_SIGNUP_SUCCESS_YES : AUTH_SIGNUP_SUCCESS_NO
+
+})
+
+// ---------------REQUEST HEADER-----------------------
 
 export const setAuthorizationHeader = token => {
 
@@ -49,6 +68,8 @@ export const deleteAuthorizationHeader = () =>{
     delete axios.defaults.headers.common.Authorization;
 
 }
+
+// -------------------------------------------------------
 
 
 export const login = (credentials,context) => (dispatch) =>{
@@ -119,6 +140,40 @@ export const logout = () => (dispatch) => {
 
         dispatch(authLoggedOut());  // redux logout;
     
+}
+
+
+export const signupEmailExists = (email) => (dispatch) => {
+
+    dispatch(authLoading());
+
+    api.auth.signupEmailExists(email)
+        .then(()=>{
+            dispatch(authSignupEmailExists(false));
+        })
+        .catch(err=>{    // login occurs error on server
+            dispatch(authSignupEmailExists(true));
+            dispatch(authError(err.response.data.errors));
+        });
+
+
+}
+
+
+export const signup = (data) => (dispatch) => {
+
+    dispatch(authLoading());
+
+    api.auth.signup(data)
+        .then(()=>{
+            dispatch(authSignup(true));
+        })
+        .catch(err=>{
+            dispatch(authSignup(false));
+            dispatch(authError(err.response.data.errors))
+        })
+
+
 }
 
 /*

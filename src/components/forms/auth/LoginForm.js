@@ -25,7 +25,7 @@ class LoginForm extends Component {
         validationErrors:{}
     }
 
-    onChangeHandler = e => {
+    onChangeHandler = (e) => {
 
         e.preventDefault();
 
@@ -36,7 +36,7 @@ class LoginForm extends Component {
     };
 
     
-    onSubmitHandler = e => {
+    onSubmitHandler = (e) => {
 
         e.preventDefault();
         
@@ -77,7 +77,7 @@ class LoginForm extends Component {
     const {serverErrors,loading} = this.props.auth; // redux: auth reducer
     // -------------------------------------------------------------------
 
-    const serverError = serverErrors.global && <ServerError errors={serverErrors.global} />
+    const serverErrorContent = serverErrors.global && <ServerError errors={serverErrors.global} />
 
     const content =
         <Form onSubmit={this.onSubmitHandler} loading={loading}>
@@ -120,7 +120,7 @@ class LoginForm extends Component {
 
         <div>
 
-            {serverError}
+            {serverErrorContent}
 
             {content}
 

@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
 import propTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {Redirect} from 'react-router-dom';
-
 import Validator from 'validator';
 import { Form,Button,Message,MessageContent,MessageHeader } from 'semantic-ui-react';
 
-import api from '../../../api/api';
+import {signupEmailExists,signup} from '../../../actions/Auth';
 
 import InlineError from '../../messages/InlineError';
 import ServerError from '../../messages/ServerError';
@@ -20,13 +18,10 @@ class SignupForm extends Component {
             password:'',
             passwordConf:'',
         },
-        loading:false,
-        success:false,
-        redirect:false,
-        errors:{}
+        validationErrors:{}
     }
 
-    onChangeInput = e => {
+    onChangeHanlder = (e) => {
 
         e.preventDefault();
         
@@ -36,159 +31,87 @@ class SignupForm extends Component {
 
     }
 
-    setRedirectOn = () => {
-        // check function: renderRedirect(); 
-        // turn on redirect page
-        setTimeout(()=>{
-            this.setState({redirect:true})
-
-        }, 10000);
-    }
-
-
-    handleOnBlur = e =>{
-
+    onBlurHandler = (e) =>{
+        
         e.preventDefault();
 
-        const errors={};
+        // ----------------CUSTOM VALIDATION EMAIL INPUT ON BLUR EVENT ---------------
+        const validationErrors={};
 
-        this.setState({errors});
+        this.setState({validationErrors});
 
-        if(!Validator.isEmail(this.state.data.email)) errors.email="invalid email";
+        if(!Validator.isEmail(this.state.data.email)) validationErrors.email="invalid email";
 
         // check if got validation error
-        if(Object.keys(errors).length > 0){
+        if(Object.keys(validationErrors).length > 0){
             this.setState({
-                errors,
-                loading:false,
-                success:false
+                validationErrors
             });
             
             return;
         }
 
-
-        this.doSignupUserExists(this.state.data.email);
-
-    }
-
-
-    validate = (data) => {
-
-        const errors = {};
-
-        this.setState({errors});
+        this.props.signupEmailExists(this.state.data.email);
         
-        if(!Validator.isEmail(data.email)) errors.email = "invalid email";
-       
-        if(data.password.length < 5) errors.password = "password must consist min 5 simbols";
-        if(data.passwordConf.length < 5) errors.passwordConf = "password must consist min 5 simbols";
-
-        if(!Validator.equals(data.password,data.passwordConf)){
-            errors.passwordConf = 'pasword isn`t match';
-        }
-
-        // check if got validation error
-        if(Object.keys(errors).length > 0)
-            this.setState({
-                errors,
-                loading:false,
-                success:false
-            })       
-
-        // return validation error status;
-        return (Object.keys(errors).length === 0) // true or false
-
     }
 
-
-    doSubmit = (e) => {
+    onSubmitHandler = (e) => {
 
         e.preventDefault();
-
-        this.setState({loading:true});
         
-        if(!this.validate(this.state.data) ) // if validation false
-            return; // stop signup process;
+        if(!this.dataValidation(this.state.data)) return; // stop signup process;
         
         // validation goes OK;
 
-        this.doSignup(this.state.data);
-    }
-
-
-    doSignupUserExists=(email)=>{
-
-        api.auth.signupUserExists(email)
-            .then(()=>{ // email not founded on db
-                // TODO: you can make input email border success; 
-            })
-            .catch(err=>{   // signup process occurs error
-
-                this.setState({
-                    errors:err.response.data.errors,
-                    loading:false,
-                    success:false
-                });
-
-            });
+        this.props.signup(this.state.data);
 
     }
 
 
-    doSignup=(data)=>{
+    dataValidation = (data) => {
 
-        api.auth.signup(data)
-            .then(()=>{ // signup process on server-side done OK;
-                this.setState({loading:false,success:true});
-                // show message success, 
-                this.setRedirectOn(); // enable redirect timer;
-                // redirect page to login;
-            })
-            .catch(err=>{   // signup process on server-side occurs error
+        const validationErrors = {};
 
-                this.setState({
-                    errors:err.response.data.errors,
-                    loading:false,
-                    success:false
-                });
+        this.setState({validationErrors});
+        
+        if(!Validator.isEmail(data.email)) validationErrors.email = "invalid email";
+       
+        if(data.password.length < 5) validationErrors.password = "password must consist min 5 simbols";
+        if(data.passwordConf.length < 5) validationErrors.passwordConf = "password must consist min 5 simbols";
 
-                // show error message
+        if(!Validator.equals(data.password,data.passwordConf)) validationErrors.passwordConf = 'pasword isn`t match';
+        
 
-            });
+        // check if got validation error
+        if(Object.keys(validationErrors).length > 0)
+            this.setState({
+                validationErrors
+            });   
+
+        // return validation error status;
+        return (Object.keys(validationErrors).length === 0) // true or false
 
     }
 
-
-    renderRedirect(){
-        // look at setRedirectOn();
-        return this.state.redirect ? <Redirect to="/login" />:'';
-                 
-    }
 
   render() {
-    // --------------variables -------------------
-    const {data,loading,errors,success} = this.state;
-    // ----------------------------------------
 
-    const serverError = errors.global && <ServerError errors={errors.global} />
+    // ---------------------state variables-------------------------------
+    const {validationErrors,data} = this.state;
+    const {serverErrors,loading} = this.props.auth; // redux: auth reducer
+    // -------------------------------------------------------------------
 
-    const content = success ?
-    (      
-        <Message info>
-            <MessageHeader>Sign up</MessageHeader>
-            <MessageContent>
-                <ul>
-                    <li>Signup successfully done</li>
-                    <li>Verify account was sent into your email</li>
-                </ul>
-            </MessageContent>
-        </Message>       
-    ):
-    (
-        <Form onSubmit={this.doSubmit} loading={loading} >
-            {errors.email && <InlineError text={errors.email} />}
-            <Form.Field error={!!errors.email}>
+    
+    
+    const serverErrorContent = serverErrors.global && <ServerError errors={serverErrors.global} />
+
+    const content = 
+        
+        <Form onSubmit={this.onSubmitHandler} loading={loading} >
+
+            {validationErrors.email && <InlineError text={validationErrors.email} />}
+            {serverErrors.email && <InlineError text={serverErrors.email} />} 
+            <Form.Field error={!!validationErrors.email || !!serverErrors.email}>
                 <label htmlFor="email">Email</label>
                 <input 
                     type="email"
@@ -196,43 +119,44 @@ class SignupForm extends Component {
                     name="email"
                     placeholder="example@example.com" 
                     value={data.email}
-                    onChange={this.onChangeInput}
-                    onBlur={this.handleOnBlur}
+                    onChange={this.onChangeHanlder}
+                    onBlur={this.onBlurHandler}
                 />
             </Form.Field>
 
-            {errors.password && <InlineError text={errors.password} />}
-            <Form.Field error={!!errors.password}>
+            {validationErrors.password && <InlineError text={validationErrors.password} />}
+            <Form.Field error={!!validationErrors.password}>
                 <label htmlFor="password">Password</label>
                 <input 
                     type="password"
                     id="password"
                     name="password"
                     value={data.password}
-                    onChange={this.onChangeInput}
+                    onChange={this.onChangeHanlder}
                 />
             </Form.Field>
 
-            {errors.passwordConf && <InlineError text={errors.passwordConf} />}
-            <Form.Field error={!!errors.passwordConf}>
+            {validationErrors.passwordConf && <InlineError text={validationErrors.passwordConf} />}
+            <Form.Field error={!!validationErrors.passwordConf}>
                 <label htmlFor="passwordConf">Password confirm</label>
                 <input 
                     type="password"
                     id="passwordConf"
                     name="passwordConf"
                     value={data.passwordConf}
-                    onChange={this.onChangeInput}
+                    onChange={this.onChangeHanlder}
                 />
             </Form.Field>
 
             <Button primary disabled={loading}>sign up</Button>
+
         </Form>
-    );
+
 
     return (
       <div>
 
-        {serverError}
+        {serverErrorContent}
 
         {content}
 
@@ -243,14 +167,23 @@ class SignupForm extends Component {
 }
 
 SignupForm.propTypes = {
-
+    auth: propTypes.shape({
+        // signupIsEmail: propTypes.bool.isRequired,
+        loading: propTypes.bool.isRequired,
+        serverErrors: propTypes.shape({
+            global: propTypes.arr,
+            email:  propTypes.string
+        }).isRequired
+    }).isRequired,
+    signupEmailExists: propTypes.func.isRequired,
+    signup: propTypes.func.isRequired
 
 }
-
+/*
 SignupForm.contextTypes = {
     router: propTypes.object.isRequired
 }
-
+*/
 
 function mapStateToProps(state){
 
@@ -260,4 +193,4 @@ function mapStateToProps(state){
 }
 
 
-export default connect(mapStateToProps,{})(SignupForm);
+export default connect(mapStateToProps,{signupEmailExists,signup})(SignupForm);

@@ -11,8 +11,8 @@ export default{
             axios.post("/api/auth/signup_confirmation_token",{token}), 
         signup: (user) =>
             axios.post("/api/auth/signup",{user}),
-        signupUserExists: (email) =>
-            axios.post("/api/auth/signup_user_exists",{email}),
+        signupEmailExists: (email) =>
+            axios.post("/api/auth/signup_email_exists",{email}),
         forgotPassword: (email) =>
             axios.post("/api/auth/forgot_password",{email}),
         resetPasswordToken: (token) =>

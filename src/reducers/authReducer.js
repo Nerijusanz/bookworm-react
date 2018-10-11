@@ -1,18 +1,24 @@
 import { 
     AUTH_LOGGED_IN,
     AUTH_LOGGED_OUT,
+    AUTH_SIGNUP_EMAIL_EXISTS_YES,
+    AUTH_SIGNUP_EMAIL_EXISTS_NO,
+    AUTH_SIGNUP_SUCCESS_YES,
+    AUTH_SIGNUP_SUCCESS_NO,
+
     AUTH_LOADING,
     AUTH_ERROR
 } from '../actions/types';
 
 const initialState={
     token:'',
-    loading:false,
     serverErrors:{},
+    loading:false,
+    success:false,
 
-    signup:{
-        success:false
-    }
+    signupIsEmail:false
+
+    
 };
 
 export default function auth(state=initialState,action){
@@ -31,7 +37,38 @@ export default function auth(state=initialState,action){
             return {
                 ...state,
                 token:''
-            };
+            }
+
+        case AUTH_SIGNUP_EMAIL_EXISTS_YES:
+            return {
+                ...state,
+                signupIsEmail: action.payload,  // NOT USE
+                loading:false
+            }
+
+        case AUTH_SIGNUP_EMAIL_EXISTS_NO:
+            return {
+                ...state,
+                signupIsEmail: action.payload,
+                serverErrors:{},
+                loading: false
+            }
+
+        case AUTH_SIGNUP_SUCCESS_YES:
+            return {
+                ...state,
+                success:true,
+                serverErrors:{},
+                loading:false
+            }
+
+        case AUTH_SIGNUP_SUCCESS_NO:{
+            return {
+                ...state,
+                success:false,
+                loading:false
+            }
+        }
 
         case AUTH_LOADING:
             return {
