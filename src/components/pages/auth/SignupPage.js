@@ -1,32 +1,26 @@
 import React, { Component } from 'react';
 import propTypes from 'prop-types';
 import {connect} from 'react-redux';
-import { Message,MessageContent,MessageHeader } from 'semantic-ui-react';
+
 import SignupForm from '../../forms/auth/SignupForm';
+import InlineMessage from '../../messages/InlineMessage';
 
 class SignupPage extends Component {
 
-  state={}
+
+  messageSignupInfo = () =>
+
+     <InlineMessage msgType="info" headerText="Sign up" contentText={`User account confirmation was sent into your email`} />
+    
+
 
   render() {
-
+    // ----------------state variables ------------------------
     const {success} = this.props.auth; // redux: auth reducer
+    // --------------------------------------------------------
 
-    const content = success ?
-    (      
-
-        <Message info>
-            <MessageHeader>Sign up</MessageHeader>
-            <MessageContent>
-                <ul>
-                    <li>Signup successfully done</li>
-                    <li>Verify account was sent into your email</li>
-                </ul>
-            </MessageContent>
-        </Message>       
-    ):
-    (<SignupForm />)
-
+    const content = success ? this.messageSignupInfo() : <SignupForm />
+         
 
     return (
       <div>

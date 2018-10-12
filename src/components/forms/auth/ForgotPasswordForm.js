@@ -2,14 +2,14 @@ import React, { Component } from 'react';
 import propTypes from 'prop-types';
 import {connect} from 'react-redux';
 
-import {Link} from 'react-router-dom';
 import Validator from 'validator';
-import {Form,Button,Message,MessageContent, MessageHeader} from 'semantic-ui-react';
+import { Form,Button } from 'semantic-ui-react';
 
+import {forgotPassword} from '../../../actions/Auth';
 import ServerError from '../../messages/ServerError';
 import InlineError from '../../messages/InlineError';
 
-import api from '../../../api/api';
+
 import {addFlashMessage} from '../../../actions/FlashMessage';
 
 
@@ -19,100 +19,66 @@ class ForgotPasswordForm extends Component {
         data:{
             email:''
         },
-        loading:false,
-        success:false,
-        errors:{}
+        validationErrors:{}
     }
 
-    onChangeInput = e => {
+    onChangeHandler = e => {
 
         e.preventDefault();
 
         this.setState({
             data:{ ...this.state.data,[e.target.name]:e.target.value}
         });
-    };
 
-    onSubmit = e => {
+    }
+
+    onSubmitHandler = e => {
 
         e.preventDefault();
 
-        this.setState({loading:true});
-
-        if(!this.validate(this.state.data) ) // validation false
-            return; // validation false
+        if(!this.dataValidation(this.state.data)) return;
         
         // validation OK;
-        api.auth.forgotPassword(this.state.data.email)
-            .then(()=>{
-                this.setState({loading:false,success:true});
-                // turn off flash message;
-                /* this.props.addFlashMessage({
-                    type:'success',
-                    message:'Password verification has been sent to your email. Check your email'
-                }); */
-            })
-            .catch(err=>
-                this.setState({
-                    loading:false,
-                    success:false,
-                    errors:err.response.data.errors,
-                })
-            );
+        this.props.forgotPassword(this.state.data.email);
 
     }
 
 
-    validate = (data) =>{
+    dataValidation = (data) =>{
 
-        const errors={};
+        const validationErrors={};
 
-        this.setState({errors});
+        this.setState({validationErrors});
 
-        if(!Validator.isEmail(data.email)) errors.email = 'invalid email';
+        if(!Validator.isEmail(data.email)) validationErrors.email = 'invalid email';
         
-        if(Object.keys(errors).length >0){
-
+        if(Object.keys(validationErrors).length > 0)
             this.setState({
-                loading:false,
-                success:false,
-                errors,
+                validationErrors
             });
-        }
+        
         // return validation error status;
-        return (Object.keys(errors).length === 0); // true or false
+        return (Object.keys(validationErrors).length === 0); // true or false
 
     }
 
 
   render() {
       
-    // -------------variables---------------------
-    const {errors,data,loading,success} = this.state;
-    // -------------------------------------------
+    // ---------------------state variables-------------------------------
+    const {validationErrors,data} = this.state;
+    const {serverErrors,loading} = this.props.auth; // redux: auth reducer
+    // -------------------------------------------------------------------
 
-    const serverError = errors.global && <ServerError errors={errors.global} />
+    const serverError = serverErrors.global && <ServerError errors={serverErrors.global} />
 
     // -----------render content-----------------
-    const content = success ?
-    (
-        <Message info>
-            <MessageHeader>Password verification has been sent to your email. Check your email</MessageHeader>
-            <MessageContent>
-                <p><Link to="/login">login</Link></p>
-            </MessageContent>
-        </Message>
-    ):
-    (
-        <div>
-            <h2>Forgot password</h2>
+    const content =
+            <Form onSubmit={this.onSubmitHandler} loading={loading}>
 
-            {errors.global && <ServerError errors={errors.global} />}
-
-            <Form onSubmit={this.onSubmit} loading={loading}>
-
-                {errors.email && <InlineError text={errors.email} />}
-                <Form.Field error={!!errors.email}>
+                {validationErrors.email && <InlineError text={validationErrors.email} />}
+                {serverErrors.email && <InlineError text={serverErrors.email} />}
+                <Form.Field error={!!validationErrors.email || !!serverErrors.email}>
                     <label htmlFor="email">Email</label>
                     <input 
                         type="text" 
@@ -120,16 +86,13 @@ class ForgotPasswordForm extends Component {
                         name="email" 
                         placeholder="example@example.com" 
                         value={data.email}
-                        onChange={this.onChangeInput}
+                        onChange={this.onChangeHandler}
                     />
                 </Form.Field>
 
                 <Button primary disabled={loading}>reset password</Button>
 
             </Form>
-        </div>
-    );
-    // ---------------render content end-------------------
 
     return (
         <div>
@@ -144,8 +107,23 @@ class ForgotPasswordForm extends Component {
 }
 
 ForgotPasswordForm.propTypes={
+    auth: propTypes.shape({
+        loading: propTypes.bool.isRequired,
+        serverErrors: propTypes.shape({
+            global: propTypes.arr,
+            email:  propTypes.string
+        }).isRequired
+    }).isRequired,
+    forgotPassword: propTypes.func.isRequired,
     addFlashMessage: propTypes.func.isRequired
 }
 
+function  mapStateToProps(state){
 
-export default connect(null,{addFlashMessage})(ForgotPasswordForm);
+    return {
+        auth: state.auth
+    }
+}
+
+
+export default connect(mapStateToProps,{forgotPassword,addFlashMessage})(ForgotPasswordForm);

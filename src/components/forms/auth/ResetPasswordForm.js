@@ -2,16 +2,15 @@ import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import propTypes from 'prop-types';
 
-import {Link} from 'react-router-dom';
 import Validator from 'validator';
-import {Form,Button,Message,MessageContent, MessageHeader} from 'semantic-ui-react';
+import {Form,Button} from 'semantic-ui-react';
 
-
+import {resetPassword} from '../../../actions/Auth';
 import ServerError from '../../messages/ServerError';
 import InlineError from '../../messages/InlineError';
 
-import api from '../../../api/api';
-import {addFlashMessage} from '../../../actions/FlashMessage';
+
+// import {addFlashMessage} from '../../../actions/FlashMessage';
 
 
 class ResetPasswordForm extends Component {
@@ -22,12 +21,10 @@ class ResetPasswordForm extends Component {
             password:'',
             passwordConfirm:'',
         },
-        loading:false,
-        success:false,
-        errors:{}
+        validationErrors:{}
     }
 
-    onChangeInput = e => {
+    onChangeHandler = e => {
 
         e.preventDefault();
 
@@ -37,13 +34,11 @@ class ResetPasswordForm extends Component {
 
     };
 
-    onSubmit = e => {
+    onSubmitHandler = e => {
 
         e.preventDefault();
 
-        this.setState({loading:true});
-
-        if(!this.validate(this.state.data)) // validation false
+        if(!this.dataValidation(this.state.data)) // validation false
             return; // validation false
 
         // reorganize state.data; Do not need passwordConf send to server;
@@ -54,110 +49,80 @@ class ResetPasswordForm extends Component {
             password
         };
 
-        api.auth.resetPassword(data)
-            .then(()=>{ // reset password successfully done on server
-                this.setState({loading:false,success:true});
-                
-                /* this.props.addFlashMessage({
-                    type:'success',
-                    message:'Password has been reset successfully'
-                }); */
-            })
-            .catch(err=>    // reset password occurs error on server
-                this.setState({
-                    loading:false,
-                    success:false,
-                    errors:err.response.data.errors
-                })
-
-            );
+        this.props.resetPassword(data);
 
     }
 
 
-    validate = (data) =>{
+    dataValidation = (data) =>{
         
-        const errors={};
+        const validationErrors={};
 
-        this.setState({errors});
+        this.setState({validationErrors});
         
-        if(data.password.length < 5) errors.password = "password must consist min 5 simbols";
+        if(data.password.length < 5) validationErrors.password = "password must consist min 5 simbols";
         if(!Validator.equals(data.password,data.passwordConfirm))
-            errors.passwordConfirm = 'pasword isn`t match';
+            validationErrors.passwordConfirm = 'pasword isn`t match';
         
         
-        if(Object.keys(errors).length > 0){
-            
+        if(Object.keys(validationErrors).length > 0)
             this.setState({      
-                loading:false,
-                success:false,
-                errors
-            })
-        }
+                validationErrors
+            });
+        
     
         // validation error status;
-        return (Object.keys(errors).length === 0); // true or false
+        return (Object.keys(validationErrors).length === 0); // true or false
         
     }
 
   render(){
 
-    const {data,errors,loading,success} = this.state;
+    // ---------------------state variables-------------------------------
+    const {validationErrors,data} = this.state;
+    const {serverErrors,loading} = this.props.auth; // redux: auth reducer
+    // -------------------------------------------------------------------
 
-    const serverError = errors.global && <ServerError errors={errors.global} />
+    const serverErrorContent = serverErrors.global && <ServerError errors={serverErrors.global} />
 
 
-    const content = success ?
-    (
-        <Message info>
-            <MessageHeader>Password has been reset successfully</MessageHeader>
-            <MessageContent>
-                <p>go to <Link to="/login">login</Link></p>
-            </MessageContent>
-        </Message>
-    ):
-    (
-        <div>
-            <h2>Reset password</h2>
+    const content =
 
-            {errors.global && <ServerError errors={errors.global} />}
+            <Form onSubmit={this.onSubmitHandler} loading={loading}>
 
-            <Form onSubmit={this.onSubmit} loading={loading}>
-
-                {errors.password && <InlineError text={errors.password} />}
-                <Form.Field error={!!errors.password}>
+                {validationErrors.password && <InlineError text={validationErrors.password} />}
+                <Form.Field error={!!validationErrors.password}>
                     <label htmlFor="password">enter new password</label>
                     <input 
                         type="password" 
                         id="password" 
                         name="password"  
                         value={data.password}
-                        onChange={this.onChangeInput}
+                        onChange={this.onChangeHandler}
                     />
                 </Form.Field>
 
-                {errors.passwordConfirm && <InlineError text={errors.passwordConfirm} />}
-                <Form.Field error={!!errors.passwordConfirm}>
+                {validationErrors.passwordConfirm && <InlineError text={validationErrors.passwordConfirm} />}
+                <Form.Field error={!!validationErrors.passwordConfirm}>
                     <label htmlFor="passwordConfirm">confirm new password</label>
                     <input 
                         type="password" 
                         id="passwordConfirm" 
                         name="passwordConfirm"  
                         value={data.passwordConfirm}
-                        onChange={this.onChangeInput}
+                        onChange={this.onChangeHandler}
                     />
                 </Form.Field>
 
                 <Button primary disabled={loading}>save password</Button>
 
             </Form>
-        </div>
-    );
+
 
     return (
         <div>
 
-            {serverError}
+            {serverErrorContent}
 
             {content}
             
@@ -166,11 +131,27 @@ class ResetPasswordForm extends Component {
   }
 }
 
-ResetPasswordForm.propTypes={
-
+ResetPasswordForm.propTypes = {
     token: propTypes.string.isRequired,
-    addFlashMessage: propTypes.func.isRequired
+    auth: propTypes.shape({
+
+        loading: propTypes.bool.isRequired,
+        serverErrors: propTypes.shape({
+            global: propTypes.arr.isRequired,
+        }).isRequired
+    }).isRequired,
+    resetPassword: propTypes.func.isRequired,
+
+
 }
 
 
-export default connect(null,{addFlashMessage})(ResetPasswordForm);
+function mapStateToProps(state){
+
+    return {
+        auth: state.auth
+    }
+}
+
+
+export default connect(mapStateToProps,{resetPassword})(ResetPasswordForm);

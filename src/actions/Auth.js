@@ -2,31 +2,22 @@ import axios from 'axios';
 import api from '../api/api';
 
 import {
-    AUTH_LOGGED_IN,
+    AUTH_LOADING,
+    AUTH_ERROR,
+    AUTH_LOGGED_IN_YES,
+    AUTH_LOGGED_IN_NO,
     AUTH_LOGGED_OUT,
 
     AUTH_SIGNUP_EMAIL_EXISTS_YES,
     AUTH_SIGNUP_EMAIL_EXISTS_NO,
     AUTH_SIGNUP_SUCCESS_YES,
     AUTH_SIGNUP_SUCCESS_NO,
-    AUTH_LOADING,
-    AUTH_ERROR
+    AUTH_SIGNUP_CONFIRMATION_TOKEN_YES,
+    AUTH_SIGNUP_CONFIRMATION_TOKEN_NO,
+
+    AUTH_FORGOT_PASSWORD_SEND_YES,
+    AUTH_FORGOT_PASSWORD_SEND_NO
 } from './types';
-
-
-
-export const authLoggedIn = auth => ({
-    
-    type: AUTH_LOGGED_IN,
-    payload:auth
-
-});
-
-export const authLoggedOut = () => ({
-
-    type: AUTH_LOGGED_OUT
-
-});
 
 export const authLoading = () => ({ 
 
@@ -41,6 +32,19 @@ export const authError = (errors) => ({
     
 });
 
+export const authLoggedIn = (status,auth) => ({
+    
+    type: (status)? AUTH_LOGGED_IN_YES : AUTH_LOGGED_IN_NO,
+    payload:auth
+
+});
+
+export const authLoggedOut = () => ({
+
+    type: AUTH_LOGGED_OUT
+
+});
+
 export const authSignupEmailExists = (isEmail) => ({
      
         type: (isEmail)? AUTH_SIGNUP_EMAIL_EXISTS_YES: AUTH_SIGNUP_EMAIL_EXISTS_NO,
@@ -51,6 +55,18 @@ export const authSignupEmailExists = (isEmail) => ({
 export const authSignup = (status) => ({
 
     type: (status)? AUTH_SIGNUP_SUCCESS_YES : AUTH_SIGNUP_SUCCESS_NO
+
+})
+
+export const authSignupConfirmationToken = (status) => ({
+
+    type: (status)? AUTH_SIGNUP_CONFIRMATION_TOKEN_YES : AUTH_SIGNUP_CONFIRMATION_TOKEN_NO
+
+})
+
+export const authForgotPassword = (status) => ({
+
+    type: (status)? AUTH_FORGOT_PASSWORD_SEND_YES : AUTH_FORGOT_PASSWORD_SEND_NO
 
 })
 
@@ -72,7 +88,7 @@ export const deleteAuthorizationHeader = () =>{
 // -------------------------------------------------------
 
 
-export const login = (credentials,context) => (dispatch) =>{
+export const login = (credentials) => (dispatch) =>{
 
 
     dispatch(authLoading());
@@ -91,15 +107,19 @@ export const login = (credentials,context) => (dispatch) =>{
 
             }
 
-            dispatch(authLoggedIn(authObj));
-
-            context.router.history.push('/dashboard');
+            dispatch(authLoggedIn(true,authObj));
 
 
         })
-        .catch(err=>    // login occurs error on server
-                dispatch(authError(err.response.data.errors))
-        );
+        .catch(err=>{    // login occurs error on server
+
+            const authObj={
+                token:''
+            }
+
+            dispatch(authLoggedIn(false,authObj));
+            dispatch(authError(err.response.data.errors))
+        });
 }
 
 
@@ -113,8 +133,8 @@ export const authenticationCheck = () => (dispatch) =>
                 token:user.token,
 
             }
-
-            dispatch(authLoggedIn(authObj));   // redux login
+            
+            dispatch(authLoggedIn(true,authObj));   // redux login
 
         })
         .catch(()=>{
@@ -124,7 +144,12 @@ export const authenticationCheck = () => (dispatch) =>
                 localStorage.removeItem('bookwormUserToken');
         
                 deleteAuthorizationHeader();
-            
+
+                const authObj={
+                    token:''
+                }
+    
+                dispatch(authLoggedIn(false,authObj));
 
         })
 
@@ -132,6 +157,8 @@ export const authenticationCheck = () => (dispatch) =>
 
 
 export const logout = () => (dispatch) => {
+
+    dispatch(authLoading());
     
     if(localStorage.getItem('bookwormUserToken'))
         localStorage.removeItem('bookwormUserToken');
@@ -164,40 +191,81 @@ export const signup = (data) => (dispatch) => {
 
     dispatch(authLoading());
 
+
+
     api.auth.signup(data)
         .then(()=>{
             dispatch(authSignup(true));
         })
         .catch(err=>{
             dispatch(authSignup(false));
-            dispatch(authError(err.response.data.errors))
+            dispatch(authError(err.response.data.errors));
         })
 
+;
+}
+
+
+export const signupConfirmationToken = (token) => (dispatch) => {
+
+    dispatch(authLoading());
+
+    api.auth.signupConfirmationToken(token)
+        .then(()=>{
+            dispatch(authSignupConfirmationToken(true));
+        })
+        .catch(err=>{
+            dispatch(authSignupConfirmationToken(false));
+            dispatch(authError(err.response.data.errors));
+        })
 
 }
 
-/*
-export const signup = (data) => (dispatch) => {
 
-    api.auth.signup(data)
-        .then(()=>{ // signup process on server-side done OK;
-            this.setState({loading:false,success:true});
-            // show message success, 
-            this.setRedirectOn(); // enable redirect timer;
-            // redirect page to login;
+export const forgotPassword = (email) => (dispatch) => {
+    
+    dispatch(authLoading());
+
+    api.auth.forgotPassword(email)
+        .then(()=>{
+            dispatch(authForgotPassword(true));
         })
-        .catch(err=>{   // signup process on server-side occurs error
+        .catch(err=>{
+            dispatch(authForgotPassword(false));
+            dispatch(authError(err.response.data.errors));
+        })
+}
 
-            this.setState({
-                errors:err.response.data.errors,
-                loading:false,
-                success:false
-            });
 
-            // show error message
+export const resetPasswordToken = (token) => (dispatch) => {
 
-        });
+    dispatch(authLoading());
 
+
+    api.auth.resetPasswordToken(token)
+        .then(()=>{
+            
+        })
+        .catch(err=>{
+            
+            dispatch(authError(err.response.data.errors));
+        })
 
 }
-*/
+
+
+export const resetPassword = (data) => (dispatch) => {
+
+
+    dispatch(authLoading());
+
+    api.auth.resetPassword(data)
+        .then(()=>{
+            
+        })
+        .catch(err=>{
+            
+            dispatch(authError(err.response.data.errors));
+        })
+
+}

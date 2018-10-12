@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import propTypes from 'prop-types';
 import {connect} from 'react-redux';
 import Validator from 'validator';
-import { Form,Button,Message,MessageContent,MessageHeader } from 'semantic-ui-react';
+
+import { Form,Button } from 'semantic-ui-react';
 
 import {signupEmailExists,signup} from '../../../actions/Auth';
 
@@ -179,11 +180,7 @@ SignupForm.propTypes = {
     signup: propTypes.func.isRequired
 
 }
-/*
-SignupForm.contextTypes = {
-    router: propTypes.object.isRequired
-}
-*/
+
 
 function mapStateToProps(state){
 

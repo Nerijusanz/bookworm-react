@@ -1,70 +1,47 @@
 import React, { Component } from 'react';
 import propTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {Link} from 'react-router-dom';
-import {Message,MessageContent, MessageHeader,Icon} from 'semantic-ui-react';
 
-import api from '../../../api/api';
+
+import {signupConfirmationToken} from '../../../actions/Auth';
 import {addFlashMessage} from '../../../actions/FlashMessage';
 
+import InlineMessage from '../../messages/InlineMessage';
 import ServerError from '../../messages/ServerError';
 
 
 class SignupConfirmationPage extends Component {
 
-    state={
-        loading:true,
-        success:false,
-        errors:{}
-    }
 
     componentDidMount(){
-
-        api.auth.signupConfirmationToken(this.props.match.params.token)
-            .then(()=>{ // signup confirmation on server-side OK;
-                this.setState({loading:false,success:true,error:false});
-                // some additional flash message
-                /* this.props.addFlashMessage({
-                    type:'success',
-                    message:'account has been success verified
-                }); */
-            })
-            .catch(err=>{   // signup confirmation on server-side occurs error
-                this.setState({
-                    loading:false,
-                    success:false,
-                    errors:err.response.data.errors 
-                });
-
-            });
+        
+        this.props.signupConfirmationToken(this.props.match.params.token);
 
     }
+
+    messageSignupConfirmationSuccess = () => {
+        const content = `User account has been confirmed successfully`;
+        return <InlineMessage msgType="success" headerText="Sign up" contentText={content} />
+    }
+
+    messageSignupConfirmationLoad = () =>
+
+        <InlineMessage msgType="load" headerText="Sign up" contentText="Sign up confirmation process" />
 
 
   render() {
-    // -----------variables ----------------
-    const {loading,errors,success} = this.state;
-    // ----------------------------------
 
-    const loadingContent = loading &&
-        <Message icon>
-            <Icon name="circle notched" loading />
-            <MessageContent>
-                <MessageHeader>signup confirmation proccess</MessageHeader>
-            </MessageContent>
-        </Message>;
+    // ---------------------state variables-------------------------------
+    const {serverErrors,loading,success} = this.props.auth; // redux: auth reducer
+    // -------------------------------------------------------------------
 
-    const serverError = errors.global && <ServerError errors={errors.global} />
+    
+    const loadingContent = loading && this.messageSignupConfirmationLoad();
 
-    const successContent = success &&
-        <Message success icon>
-            <Icon name="checkmark" />  
-            
-            <MessageContent>
-                <MessageHeader>account has been success verified</MessageHeader>
-                <Link to="/login">login</Link>
-            </MessageContent>
-        </Message>
+    const serverErrorContent = serverErrors.global && <ServerError errors={serverErrors.global} />
+
+    const successContent = success && this.messageSignupConfirmationSuccess();
+
 
     return (
 
@@ -72,7 +49,7 @@ class SignupConfirmationPage extends Component {
 
         {loadingContent}
 
-        {serverError}
+        {serverErrorContent}
 
         {successContent}
 
@@ -82,12 +59,29 @@ class SignupConfirmationPage extends Component {
 }
 
 SignupConfirmationPage.propTypes={
-    addFlashMessage: propTypes.func.isRequired,
+    
     match:propTypes.shape({
         params:propTypes.shape({
             token:propTypes.string.isRequired
         }).isRequired
-    }).isRequired
+    }).isRequired,
+    auth: propTypes.shape({
+        loading: propTypes.bool.isRequired,
+        success: propTypes.bool.isRequired,
+        serverErrors: propTypes.shape({
+            global: propTypes.arr
+        }).isRequired
+    }).isRequired,
+    signupConfirmationToken: propTypes.func.isRequired,
+    addFlashMessage: propTypes.func.isRequired
 }
 
-export default connect(null,{addFlashMessage})(SignupConfirmationPage);
+function mapStateToProps(state){
+
+    return {
+        auth: state.auth
+    }
+  }
+
+
+export default connect(mapStateToProps,{addFlashMessage,signupConfirmationToken})(SignupConfirmationPage);

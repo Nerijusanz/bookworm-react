@@ -44,7 +44,7 @@ class LoginForm extends Component {
         
         // validation OK;
         
-        this.props.login(this.state.data,this.context);
+        this.props.login(this.state.data);
 
     }
 
@@ -140,11 +140,6 @@ LoginForm.propTypes = {
     }).isRequired
 
 }
-
-LoginForm.contextTypes = {
-    router: propTypes.object.isRequired
-}
-
 
 function  mapStateToProps(state){
 
