@@ -2,9 +2,8 @@ import React, { Component } from 'react';
 import propTypes from 'prop-types';
 import {connect} from 'react-redux';
 
-import {Message,MessageContent, MessageHeader,Icon} from 'semantic-ui-react';
-
-import api from '../../../api/api';
+import {resetPasswordToken} from '../../../actions/Auth';
+import InlineMessage from '../../messages/InlineMessage';
 import ResetPasswordForm from '../../forms/auth/ResetPasswordForm';
 import ServerError from '../../messages/ServerError';
 
@@ -12,56 +11,50 @@ import ServerError from '../../messages/ServerError';
 
 class ResetPasswordPage extends Component {
 
-    state={
-        loading:true,
-        success:false,
-        errors:{}
-    }
 
     componentDidMount(){
-
-        // ResetPasswordToken
-        api.auth.resetPasswordToken(this.props.match.params.token)
-            .then(()=>{ // resetPassword token server-side verify OK;
-                this.setState({loading:false,error:false,success:true});
-            })
-            .catch(err=>{ // resetPassword token server-side occurs error;
-                this.setState({
-                    loading:false,
-                    success:false,
-                    errors: err.response.data.errors
-                });
-            })
-
+        
+        this.props.resetPasswordToken(this.props.match.params.token);   // get token from url param;
 
     }
+    
+    messageLoad = () =>
+
+        <InlineMessage msgType="load" headerText="reset password" contentText="reset password process" />
+
+
+    messageSuccess = () => {
+        const content = `reset password successfully done. Go to login`;
+        return <InlineMessage msgType="success" headerText="Reset Password" contentText={content} />
+    }
+
 
   render() {
 
-    // ------------variables----------
-    const {loading,success,errors} = this.state;
-    const token = this.props.match.params.token;
-    // -------------------------------
+    // ---------------------state variables-------------------------------
+    const token = this.props.match.params.token; // got token from url param;
+    const {serverErrors,loading,success,resetPasswordTokenStatus} = this.props.auth; // redux: auth reducer
+    // -------------------------------------------------------------------
 
-    const loadingContent = loading &&
-        <Message icon>
-            <Icon name="circle notched" loading />
-            <MessageContent>
-                <MessageHeader>process password</MessageHeader>
-            </MessageContent>   
-        </Message>;
-    
 
-    const serverError = errors.global && <ServerError errors={errors.global} />
+    const loadingContent = loading && this.messageLoad();
 
-    const successContent = success &&  <ResetPasswordForm token={token} />
+    const serverErrorContent = serverErrors.global && <ServerError errors={serverErrors.global} />
+
+    const resetPasswordFormContent = (!success && resetPasswordTokenStatus) && <ResetPasswordForm token={token} />
+
+    const successContent  = success && this.messageSuccess();
 
 
     return (
       <div>
+          <h1>Resset password page</h1>
+
           {loadingContent}
 
-          {serverError}
+          {serverErrorContent}
+
+          {resetPasswordFormContent}
 
           {successContent}
 
@@ -76,7 +69,29 @@ ResetPasswordPage.propTypes={
         params:propTypes.shape({
             token:propTypes.string.isRequired
         }).isRequired
-    }).isRequired
+    }).isRequired,
+    auth: propTypes.shape({
+        loading: propTypes.bool.isRequired,
+        success: propTypes.bool.isRequired,
+        resetPasswordTokenStatus: propTypes.bool.isRequired,
+        serverErrors: propTypes.shape({
+            global: propTypes.arr
+        }).isRequired,
+
+    }).isRequired,
+    resetPasswordToken: propTypes.func.isRequired
 }
 
-export default connect(null,{})(ResetPasswordPage);
+ResetPasswordPage.contextTypes = {
+    router: propTypes.object.isRequired
+  }
+
+function mapStateToProps(state){
+
+    return {
+        auth: state.auth
+    }
+}
+
+
+export default connect(mapStateToProps,{resetPasswordToken})(ResetPasswordPage);

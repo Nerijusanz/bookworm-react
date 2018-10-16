@@ -55,6 +55,7 @@ class SignupForm extends Component {
         this.props.signupEmailExists(this.state.data.email);
         
     }
+    
 
     onSubmitHandler = (e) => {
 

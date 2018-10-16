@@ -38,18 +38,9 @@ class ResetPasswordForm extends Component {
 
         e.preventDefault();
 
-        if(!this.dataValidation(this.state.data)) // validation false
-            return; // validation false
+        if(!this.dataValidation(this.state.data)) return;
 
-        // reorganize state.data; Do not need passwordConf send to server;
-        const {token,password} = this.state.data;
-
-        const data={
-            token,
-            password
-        };
-
-        this.props.resetPassword(data);
+        this.props.resetPassword(this.state.data);
 
     }
 
@@ -80,11 +71,8 @@ class ResetPasswordForm extends Component {
 
     // ---------------------state variables-------------------------------
     const {validationErrors,data} = this.state;
-    const {serverErrors,loading} = this.props.auth; // redux: auth reducer
+    const {loading} = this.props.auth; // redux: auth reducer
     // -------------------------------------------------------------------
-
-    const serverErrorContent = serverErrors.global && <ServerError errors={serverErrors.global} />
-
 
     const content =
 
@@ -122,8 +110,6 @@ class ResetPasswordForm extends Component {
     return (
         <div>
 
-            {serverErrorContent}
-
             {content}
             
         </div>
@@ -134,10 +120,9 @@ class ResetPasswordForm extends Component {
 ResetPasswordForm.propTypes = {
     token: propTypes.string.isRequired,
     auth: propTypes.shape({
-
         loading: propTypes.bool.isRequired,
         serverErrors: propTypes.shape({
-            global: propTypes.arr.isRequired,
+            global: propTypes.arr,
         }).isRequired
     }).isRequired,
     resetPassword: propTypes.func.isRequired,

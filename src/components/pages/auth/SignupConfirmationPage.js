@@ -24,7 +24,7 @@ class SignupConfirmationPage extends Component {
         return <InlineMessage msgType="success" headerText="Sign up" contentText={content} />
     }
 
-    messageSignupConfirmationLoad = () =>
+    messageLoad = () =>
 
         <InlineMessage msgType="load" headerText="Sign up" contentText="Sign up confirmation process" />
 
@@ -36,7 +36,7 @@ class SignupConfirmationPage extends Component {
     // -------------------------------------------------------------------
 
     
-    const loadingContent = loading && this.messageSignupConfirmationLoad();
+    const loadingContent = loading && this.messageLoad();
 
     const serverErrorContent = serverErrors.global && <ServerError errors={serverErrors.global} />
 

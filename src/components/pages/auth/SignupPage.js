@@ -8,7 +8,7 @@ import InlineMessage from '../../messages/InlineMessage';
 class SignupPage extends Component {
 
 
-  messageSignupInfo = () =>
+  messageInfo = () =>
 
      <InlineMessage msgType="info" headerText="Sign up" contentText={`User account confirmation was sent into your email`} />
     
@@ -19,7 +19,7 @@ class SignupPage extends Component {
     const {success} = this.props.auth; // redux: auth reducer
     // --------------------------------------------------------
 
-    const content = success ? this.messageSignupInfo() : <SignupForm />
+    const content = success ? this.messageInfo() : <SignupForm />
          
 
     return (

@@ -5,6 +5,8 @@ export default{
     auth:{
         login: (credentials) =>
             axios.post("/api/auth/login",{credentials}).then(res=>res.data.user),
+        logout: (logoutToken) => 
+            axios.post("/api/auth/logout",{logoutToken}),
         authenticationCheck: () =>
             axios.post("/api/auth/authentication_check").then(res=>res.data.user),
         signupConfirmationToken: (token) =>

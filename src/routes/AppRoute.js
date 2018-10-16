@@ -50,13 +50,15 @@ class AppRoute extends Component {
       
       !this.state.loading &&
         <div>
-          <Route location={this.props.location} path="/" exact component={HomePage} />    
-          <Route location={this.props.location} path="/signup" exact component={SignupPage} />
-          <Route location={this.props.location} path="/signup_confirmation_token/:token" exact component={SignupConfirmationPage} /> 
-          <Route location={this.props.location} path="/forgot_password" exact component={ForgotPasswordPage} />
-          <Route location={this.props.location} path="/reset_password_token/:token" exact component={ResetPasswordPage} />
           
+          <Route location={this.props.location} path="/" exact component={HomePage} />    
+
+          <GuestRoute location={this.props.location} path="/signup" exact component={SignupPage} />
+          <GuestRoute location={this.props.location} path="/signup_confirmation_token/:token" exact component={SignupConfirmationPage} /> 
+          <GuestRoute location={this.props.location} path="/forgot_password" exact component={ForgotPasswordPage} />
+          <GuestRoute location={this.props.location} path="/reset_password_token/:token" exact component={ResetPasswordPage} />
           <GuestRoute location={this.props.location} path="/login" exact component={LoginPage} />
+
           <AuthRoute location={this.props.location} path="/dashboard" exact component={DashboardPage} />
         </div>
 
