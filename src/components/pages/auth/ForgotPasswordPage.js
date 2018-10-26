@@ -9,17 +9,20 @@ import InlineMessage from '../../messages/InlineMessage';
 
 class ForgotPasswordPage extends Component {
 
-  messageForgotPasswordSendInfo = () =>
+  messageForgotPasswordSendInfo = () => {
+    
+    const  msg  = `Password verification has been sent to your email. Check your email`;
+    return <InlineMessage msgType="info" headerText="Forgot password" contentText={msg} />
 
-    <InlineMessage msgType="info" headerText="Forgot password" contentText={`Password verification has been sent to your email. Check your email`} />
- 
+  }
+  
 
   render() {
 
       // ----------------state variables ------------------------
       const {success} = this.props.auth; // redux: auth reducer
       // --------------------------------------------------------
-
+      
       const content = success ? this.messageForgotPasswordSendInfo() : <ForgotPasswordForm />
 
     return (
