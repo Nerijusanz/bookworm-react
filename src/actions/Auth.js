@@ -2,7 +2,9 @@ import axios from 'axios';
 import api from '../api/api';
 
 import {
-    AUTH_LOADING,
+    AUTH_LOADING_START,
+    AUTH_LOADING_STOP,
+
     AUTH_ERROR,
 
     AUTH_LOGGED_IN_YES,
@@ -30,9 +32,9 @@ import {
 
 } from './types';
 
-export const authLoading = () => ({ 
+export const authLoading = (status) => ({ 
 
-    type: AUTH_LOADING
+    type:(status)? AUTH_LOADING_START : AUTH_LOADING_STOP,
 
 });
 
@@ -120,7 +122,7 @@ export const deleteAuthorizationHeader = () =>{
 export const login = (credentials) => (dispatch) =>{
 
 
-    dispatch(authLoading());
+    dispatch(authLoading(true));
 
     api.auth.login(credentials)
         .then(user=>{   // login on server-side process OK;
@@ -147,20 +149,31 @@ export const login = (credentials) => (dispatch) =>{
             dispatch(authLoggedIn(false,authObj));
             dispatch(authError(err.response.data.errors))
         });
+
+ 
 }
 
 
-export const authenticationCheck = () => (dispatch) =>
+export const authenticationCheck = () => (dispatch) => {
 
+    // note: authenticationCheck() initialized on: routes->appRoute->componentWillMount()
+
+    dispatch(authLoading(true));
 
     api.auth.authenticationCheck()
         .then(user=>{
 
+            const {token,logoutToken} = user;
+
+            localStorage.setItem('bookwormUserToken',token); // save token on browser local storage;
+
+            setAuthorizationHeader(token); // add token to request header
+
             const authObj={
-                token:user.token,
-                logoutToken: user.logoutToken
+                token,
+                logoutToken
             }
-            
+
             dispatch(authAuthentication(true,authObj));   // redux login
 
         })
@@ -176,14 +189,16 @@ export const authenticationCheck = () => (dispatch) =>
     
                 dispatch(authAuthentication(false,authObj));
 
-        })
+        });
+    
 
+}
 
 
 
 export const logout = (logoutToken) => (dispatch) => {
 
-    dispatch(authLoading());
+    dispatch(authLoading(true));
 
     api.auth.logout(logoutToken)
         .then(()=>{
@@ -202,13 +217,13 @@ export const logout = (logoutToken) => (dispatch) => {
             dispatch(authError(err.response.data.errors));
         })
 
-    
+
 }
 
 
 export const signupEmailExists = (email) => (dispatch) => {
 
-    dispatch(authLoading());
+    dispatch(authLoading(true));
 
     api.auth.signupEmailExists(email)
         .then(()=>{
@@ -218,14 +233,14 @@ export const signupEmailExists = (email) => (dispatch) => {
             dispatch(authSignupEmailExists(true));
             dispatch(authError(err.response.data.errors));
         });
-
+    
 
 }
 
 
 export const signup = (data) => (dispatch) => {
 
-    dispatch(authLoading());
+    dispatch(authLoading(true));
 
     api.auth.signup(data)
         .then(()=>{
@@ -235,13 +250,14 @@ export const signup = (data) => (dispatch) => {
             dispatch(authSignup(false));
             dispatch(authError(err.response.data.errors));
         })
-
+    
+ 
 }
 
 
 export const signupConfirmationToken = (token) => (dispatch) => {
 
-    dispatch(authLoading());
+    dispatch(authLoading(true));
 
     api.auth.signupConfirmationToken(token)
         .then(()=>{
@@ -250,14 +266,15 @@ export const signupConfirmationToken = (token) => (dispatch) => {
         .catch(err=>{
             dispatch(authSignupConfirmationToken(false));
             dispatch(authError(err.response.data.errors));
-        })
+        });
+
 
 }
 
 
 export const forgotPassword = (email) => (dispatch) => {
     
-    dispatch(authLoading());
+    dispatch(authLoading(true));
 
     api.auth.forgotPassword(email)
         .then(()=>{
@@ -266,13 +283,15 @@ export const forgotPassword = (email) => (dispatch) => {
         .catch(err=>{
             dispatch(authForgotPassword(false));
             dispatch(authError(err.response.data.errors));
-        })
+        });
+
+
 }
 
 
 export const resetPasswordToken = (token) => (dispatch) => {
 
-    dispatch(authLoading());
+    dispatch(authLoading(true));
 
     api.auth.resetPasswordToken(token)
         .then(()=>{
@@ -281,15 +300,15 @@ export const resetPasswordToken = (token) => (dispatch) => {
         .catch(err=>{
             dispatch(authResetPasswordToken(false));
             dispatch(authError(err.response.data.errors));
-        })
+        });
+
 
 }
 
 
 export const resetPassword = (data) => (dispatch) => {
 
-
-    dispatch(authLoading());
+    dispatch(authLoading(true));
 
     api.auth.resetPassword(data)
         .then(()=>{
@@ -298,7 +317,7 @@ export const resetPassword = (data) => (dispatch) => {
         .catch(err=>{
             dispatch(authResetPassword(false));
             dispatch(authError(err.response.data.errors));
-        })
+        });
 
 }
 

@@ -26,7 +26,9 @@ import {
     AUTH_RESET_PASSWORD_SUCCESS_YES,
     AUTH_RESET_PASSWORD_SUCCESS_NO,
 
-    AUTH_LOADING,
+    AUTH_LOADING_START,
+    AUTH_LOADING_STOP,
+
     AUTH_ERROR
 } from '../actions/types';
 
@@ -90,7 +92,6 @@ export default function auth(state=initialState,action){
                 serverErrors:{},
                 success:true,
                 loading:false
-
             }
 
         case AUTH_AUTHENTICATION_STATUS_NO:
@@ -114,7 +115,7 @@ export default function auth(state=initialState,action){
                 ...state,
                 signupIsEmail:false,
                 serverErrors:{},
-                loading: false
+                loading:false
             }
 
         case AUTH_SIGNUP_SUCCESS_YES:
@@ -202,10 +203,16 @@ export default function auth(state=initialState,action){
             }
         }
 
-        case AUTH_LOADING:
+        case AUTH_LOADING_START:
             return {
                 ...state,
                 loading:true
+            }
+
+        case AUTH_LOADING_STOP:
+            return {
+                ...state,
+                loading:false
             }
 
         case AUTH_ERROR:

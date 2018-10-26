@@ -6,7 +6,6 @@ import Validator from 'validator';
 import {Form,Button} from 'semantic-ui-react';
 
 import {resetPassword} from '../../../actions/Auth';
-import ServerError from '../../messages/ServerError';
 import InlineError from '../../messages/InlineError';
 
 

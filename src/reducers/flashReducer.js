@@ -15,12 +15,13 @@ export default function flashMessage(state=initialState,action){
         case ADD_FLASH_MESSAGE:
             return {
                 ...state,
-                messages:[...state.messages,
-                {
-                    id: shortid.generate(),    
-                    type: action.payload.type,
-                    message: action.payload.message
-                }]
+                messages:[
+                    ...state.messages,
+                    {
+                        id: shortid.generate(),    
+                        type: action.payload.type,
+                        message: action.payload.message
+                    }]
                  
             }
 

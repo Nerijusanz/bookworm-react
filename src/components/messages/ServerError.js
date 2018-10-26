@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import propTypes from 'prop-types';
 import { Message } from 'semantic-ui-react';
+import ServerErrorItem from './ServerErrorItem';
 
 
 
@@ -9,26 +10,26 @@ import { Message } from 'semantic-ui-react';
 
     render(){
 
-        const errorsList = this.props.errors.map((error,index) =>
-        <li key={index}>{error}</li>)
-    
+        // usage example: <ServerError errors={serverErrors.global} />
 
+        const errorsItems = this.props.errors.map((error,index) => 
+            <ServerErrorItem key={index} error={error} />
+        );
+
+        const errorsList = <ul>{errorsItems}</ul>;
+        
         return (
             <div>
                 <Message negative>
                     <Message.Header>server errors</Message.Header>
-                
-                    <ul>
                         {errorsList}
-                    </ul>
                 </Message>
             </div>
         );
     }
 
 
-  
- }
+}
 
 ServerError.propTypes = {
     errors: propTypes.array.isRequired  // <ServerError errors={errors.global} />
