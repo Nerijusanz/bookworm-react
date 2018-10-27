@@ -2,17 +2,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import propTypes from 'prop-types';
 
-
-import {logout} from '../../../actions/Auth';
-
 import Timezone from './Timezone';
-
+import TopDashboardNavigation from './TopDashboardNavigation';
 
 class DashboardPage extends Component {
 
-  componentDidMount(){
-
-    
+  componentDidMount(){ 
 /*
     api.dashboard.page()
     .then(()=>{
@@ -27,25 +22,12 @@ class DashboardPage extends Component {
 
   }
   
-
-  onlogoutHandler=(logoutToken)=>{
-
-    this.props.logout(logoutToken);
-
-    // this.props.history.push('/');
-  }
-
-
   render() {
-
-      const {logoutToken} = this.props.auth;
 
     return (
       <div>
-
-        <h1>DashboardPage</h1>
+        <TopDashboardNavigation/>
         <Timezone />
-        {<button onClick={()=>this.onlogoutHandler(logoutToken)}>logout</button> }
       </div>
     )
   }
@@ -58,7 +40,7 @@ DashboardPage.propTypes={
     logoutToken: propTypes.string.isRequired,
 
   }).isRequired,
-  logout: propTypes.func.isRequired,
+
 
 }
 
@@ -74,4 +56,4 @@ function mapStateToProps(state){
 }
 
 
-export default connect(mapStateToProps,{logout})(DashboardPage);
+export default connect(mapStateToProps,{})(DashboardPage);

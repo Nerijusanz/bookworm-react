@@ -45,7 +45,7 @@ export const authError = (errors) => ({
     
 });
 
-export const authLoggedIn = (status,auth) => ({
+export const authLoggedIn = (status,auth={}) => ({
     
     type: (status)? AUTH_LOGGED_IN_YES : AUTH_LOGGED_IN_NO,
     payload:auth
@@ -58,7 +58,7 @@ export const authLoggedOut = (status) => ({
 
 });
 
-export const authAuthentication = (status,auth) => ({
+export const authAuthentication = (status,auth={}) => ({
 
     type: (status)? AUTH_AUTHENTICATION_STATUS_YES : AUTH_AUTHENTICATION_STATUS_NO,
     payload:auth
@@ -126,28 +126,20 @@ export const login = (credentials) => (dispatch) =>{
 
     api.auth.login(credentials)
         .then(user=>{   // login on server-side process OK;
-        
-            const {token,logoutToken} = user;
 
-            localStorage.setItem('bookwormUserToken',token); // save token on browser local storage;
+            localStorage.setItem('bookwormUserToken',user.token); // save token on browser local storage;
 
-            setAuthorizationHeader(token); // add token to request header
+            setAuthorizationHeader(user.token); // add token to request header
 
-            const authObj={
-                token,
-                logoutToken
-            }
-
-            dispatch(authLoggedIn(true,authObj));
-
+            dispatch(authLoggedIn(true,user));
 
         })
         .catch(err=>{    // login occurs error on server
 
-            const authObj={}
+            dispatch(authLoggedIn(false));
 
-            dispatch(authLoggedIn(false,authObj));
             dispatch(authError(err.response.data.errors))
+
         });
 
  
@@ -163,34 +155,22 @@ export const authenticationCheck = () => (dispatch) => {
     api.auth.authenticationCheck()
         .then(user=>{
 
-            const {token,logoutToken} = user;
+            localStorage.setItem('bookwormUserToken',user.token); // save token on browser local storage;
 
-            localStorage.setItem('bookwormUserToken',token); // save token on browser local storage;
+            setAuthorizationHeader(user.token); // add token to request header
 
-            setAuthorizationHeader(token); // add token to request header
-
-            const authObj={
-                token,
-                logoutToken
-            }
-
-            dispatch(authAuthentication(true,authObj));   // redux login
+            dispatch(authAuthentication(true,user));   // redux login
 
         })
         .catch(()=>{
 
-            // make full logout process
-            if(localStorage.getItem('bookwormUserToken'))
                 localStorage.removeItem('bookwormUserToken');
         
                 deleteAuthorizationHeader();
-
-                const authObj={}
     
-                dispatch(authAuthentication(false,authObj));
+                dispatch(authAuthentication(false));
 
-        });
-    
+        });   
 
 }
 
@@ -203,8 +183,7 @@ export const logout = (logoutToken) => (dispatch) => {
     api.auth.logout(logoutToken)
         .then(()=>{
 
-            if(localStorage.getItem('bookwormUserToken'))
-                localStorage.removeItem('bookwormUserToken');
+            localStorage.removeItem('bookwormUserToken');
     
             deleteAuthorizationHeader();
 
@@ -214,7 +193,9 @@ export const logout = (logoutToken) => (dispatch) => {
         .catch(err=>{
 
             dispatch(authLoggedOut(false));
+
             dispatch(authError(err.response.data.errors));
+
         })
 
 
@@ -227,11 +208,16 @@ export const signupEmailExists = (email) => (dispatch) => {
 
     api.auth.signupEmailExists(email)
         .then(()=>{
+
             dispatch(authSignupEmailExists(false));
+
         })
         .catch(err=>{    // login occurs error on server
+
             dispatch(authSignupEmailExists(true));
+
             dispatch(authError(err.response.data.errors));
+
         });
     
 
@@ -244,11 +230,16 @@ export const signup = (data) => (dispatch) => {
 
     api.auth.signup(data)
         .then(()=>{
+
             dispatch(authSignup(true));
+
         })
         .catch(err=>{
+
             dispatch(authSignup(false));
+
             dispatch(authError(err.response.data.errors));
+
         })
     
  
@@ -261,11 +252,16 @@ export const signupConfirmationToken = (token) => (dispatch) => {
 
     api.auth.signupConfirmationToken(token)
         .then(()=>{
+
             dispatch(authSignupConfirmationToken(true));
+
         })
         .catch(err=>{
+
             dispatch(authSignupConfirmationToken(false));
+
             dispatch(authError(err.response.data.errors));
+
         });
 
 
@@ -278,11 +274,16 @@ export const forgotPassword = (email) => (dispatch) => {
 
     api.auth.forgotPassword(email)
         .then(()=>{
+
             dispatch(authForgotPassword(true));
+
         })
         .catch(err=>{
+
             dispatch(authForgotPassword(false));
+
             dispatch(authError(err.response.data.errors));
+
         });
 
 
@@ -295,11 +296,16 @@ export const resetPasswordToken = (token) => (dispatch) => {
 
     api.auth.resetPasswordToken(token)
         .then(()=>{
+
             dispatch(authResetPasswordToken(true));
+
         })
         .catch(err=>{
+
             dispatch(authResetPasswordToken(false));
+
             dispatch(authError(err.response.data.errors));
+
         });
 
 
@@ -312,11 +318,16 @@ export const resetPassword = (data) => (dispatch) => {
 
     api.auth.resetPassword(data)
         .then(()=>{
+
             dispatch(authResetPassword(true));
+
         })
         .catch(err=>{
+
             dispatch(authResetPassword(false));
+
             dispatch(authError(err.response.data.errors));
+
         });
 
 }

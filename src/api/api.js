@@ -4,11 +4,11 @@ import axios from 'axios';
 export default{
     auth:{
         login: (credentials) =>
-            axios.post("/api/auth/login",{credentials}).then(res=>res.data.user),
+            axios.post("/api/auth/login",{credentials}).then(res=>res.data),
         logout: (logoutToken) => 
             axios.post("/api/auth/logout",{logoutToken}),
         authenticationCheck: () =>
-            axios.post("/api/auth/authentication_check").then(res=>res.data.user),
+            axios.post("/api/auth/authentication_check").then(res=>res.data),
         signupConfirmationToken: (token) =>
             axios.post("/api/auth/signup_confirmation_token",{token}), 
         signup: (user) =>

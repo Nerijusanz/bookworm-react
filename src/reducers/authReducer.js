@@ -1,3 +1,4 @@
+import jwt_decode from 'jwt-decode';
 import { 
     AUTH_LOGGED_IN_YES,
     AUTH_LOGGED_IN_NO,
@@ -35,6 +36,7 @@ import {
 const initialState={
     token:'',
     logoutToken:'',
+    user:{},
     serverErrors:{},
     loading:false,
     success:false,
@@ -53,8 +55,9 @@ export default function auth(state=initialState,action){
         case AUTH_LOGGED_IN_YES:
             return {
                 ...state,
-                token: action.payload.token,
-                logoutToken: action.payload.logoutToken,
+                token: action.payload.token,    // expiration time: on
+                logoutToken: action.payload.logoutToken,    // expiration time: off
+                user: jwt_decode(action.payload.token),
                 serverErrors:{},
                 success:true,
                 loading:false
@@ -65,6 +68,7 @@ export default function auth(state=initialState,action){
                 ...state,
                 token:'',
                 logoutToken:'',
+                user:{},
                 success:false,
                 loading:false
             }
@@ -74,6 +78,7 @@ export default function auth(state=initialState,action){
                 ...state,
                 token:'',
                 logoutToken:'',
+                user:{},
                 success:false,
                 loading:false
             }
@@ -87,8 +92,9 @@ export default function auth(state=initialState,action){
         case AUTH_AUTHENTICATION_STATUS_YES:
             return {
                 ...state,
-                token: action.payload.token,
-                logoutToken: action.payload.logoutToken,
+                token: action.payload.token,    // expiration time: on
+                logoutToken: action.payload.logoutToken,    // expiration time: off
+                user: jwt_decode(action.payload.token),
                 serverErrors:{},
                 success:true,
                 loading:false
@@ -99,6 +105,7 @@ export default function auth(state=initialState,action){
                 ...state,
                 token:'',
                 logoutToken:'',
+                user:{},
                 success:false,
                 loading:false
             }
