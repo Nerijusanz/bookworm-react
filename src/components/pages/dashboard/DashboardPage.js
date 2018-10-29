@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 import propTypes from 'prop-types';
 
 import Timezone from './Timezone';
-import TopDashboardNavigation from './TopDashboardNavigation';
+
+import {BooksLink} from './books/BooksLink';
 
 class DashboardPage extends Component {
 
@@ -26,8 +27,9 @@ class DashboardPage extends Component {
 
     return (
       <div>
-        <TopDashboardNavigation/>
+
         <Timezone />
+        <BooksLink/>
       </div>
     )
   }

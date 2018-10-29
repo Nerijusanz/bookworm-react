@@ -18,7 +18,8 @@ import SignupConfirmationPage from '../components/pages/auth/SignupConfirmationP
 import ForgotPasswordPage from '../components/pages/auth/ForgotPasswordPage';
 import ResetPasswordPage from '../components/pages/auth/ResetPasswordPage';
 
-// import {NoMatchRoute} from './NoMatchRoute';
+import Books from '../components/pages/dashboard/books/Books';
+import AddBook from '../components/pages/dashboard/books/AddBook';
 
 
 import DashboardPage from '../components/pages/dashboard/DashboardPage';
@@ -29,7 +30,7 @@ import DashboardPage from '../components/pages/dashboard/DashboardPage';
 class AppRoute extends Component {
 
 
-  componentWillMount(){
+  componentDidMount(){
 
     // note: if on server-side got user authenticated succes, than redux add isAuthenticated!!!
     this.props.authenticationCheck();
@@ -55,6 +56,8 @@ class AppRoute extends Component {
             <GuestRoute location={this.props.location} path="/login" exact component={LoginPage} />
 
             <AuthRoute location={this.props.location} path="/dashboard" exact component={DashboardPage} />
+            <AuthRoute location={this.props.location} path="/dashboard/books" exact component={Books} />
+            <AuthRoute location={this.props.location} path="/dashboard/books/add" exact component={AddBook} />
 
             <Route component={NotFoundRedirect} />
 

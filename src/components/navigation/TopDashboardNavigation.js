@@ -5,23 +5,22 @@ import gravatarUrl from 'gravatar-url';
 import {Menu, Dropdown,DropdownItem,Image, DropdownMenu} from 'semantic-ui-react';
 import {Link} from 'react-router-dom';
 
-import * as actions from '../../../actions/Auth';
+import * as actions from '../../actions/Auth';
 
 
 const TopDashboardNavigation = ({auth,logout}) => (
 
-    <Menu secondary pointing>
-        <Menu.Item as={Link} to="/dashboard">Dashboard</Menu.Item>
+        <Menu secondary pointing>
+            <Menu.Item as={Link} to="/dashboard">Dashboard</Menu.Item>
 
-        <Menu.Menu position="right">
-            <Dropdown trigger={<Image avatar src={gravatarUrl(auth.user.email)}/>}>
-                <DropdownMenu>
-                    <DropdownItem onClick={()=>logout(auth.logoutToken)}>Logout</DropdownItem>
-                </DropdownMenu>
-            </Dropdown>
-        </Menu.Menu>
-
-    </Menu>
+            <Menu.Menu position="right">
+                <Dropdown trigger={<Image avatar src={gravatarUrl(auth.user.email)}/>}>
+                    <DropdownMenu>
+                        <DropdownItem onClick={()=>logout(auth.logoutToken)}>Logout</DropdownItem>
+                    </DropdownMenu>
+                </Dropdown>
+            </Menu.Menu>
+        </Menu>
 
 );
 
@@ -32,7 +31,6 @@ TopDashboardNavigation.propTypes={
             email: propTypes.string.isRequired,
         }).isRequired,
         logoutToken: propTypes.string.isRequired,
-  
     }).isRequired,
     logout: propTypes.func.isRequired,
   
