@@ -39,3 +39,9 @@ export const ADD_FLASH_MESSAGE = "ADD_FLASH_MESSAGE";
 export const DELETE_FLASH_MESSAGE = "DELETE_FLASH_MESSAGE";
 // ------------------------------------------------------------
 
+// ---------------BOOKS----------------------------------------------
+export const BOOK_LOADING_START = 'BOOK_LOADING_START';
+export const BOOK_LOADING_STOP = 'BOOK_LOADING_STOP';
+
+export const BOOK_SEARCH_BOOKS_STATUS_YES = 'BOOK_SEARCH_BOOKS_STATUS_YES';
+export const BOOK_SEARCH_BOOKS_STATUS_NO = 'BOOK_SEARCH_BOOKS_STATUS_NO';

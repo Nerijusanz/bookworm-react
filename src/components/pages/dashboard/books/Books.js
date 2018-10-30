@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import propTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { Segment } from 'semantic-ui-react';
 
 import ListBooks from './ListBooks';
-import {AddBookLink} from './BooksLink'; 
+import {AddBookLink} from './BooksLink';
+import SearchBook from './SearchBook'; 
+
 
 class Books extends Component {
   
@@ -11,9 +14,12 @@ class Books extends Component {
 
     return (
       <div>
-          <AddBookLink/>
-         <ListBooks/> 
-          
+        <div><AddBookLink/></div>
+        <div><SearchBook/></div>
+
+        <Segment>
+          <ListBooks/> 
+        </Segment>
       </div>
     )
   }

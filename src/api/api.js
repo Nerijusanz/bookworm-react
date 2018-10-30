@@ -28,8 +28,10 @@ export default{
             axios.get("/api/dashboard"),
     },
     books:{
+        books:()=>
+            axios.get("/api/books").then(res=>res.data),
         searchBook:(query)=>
-            axios.get("/api/dashboard/books",{query}),
+            axios.get(`/api/books/search?q=${query}`).then(res=>res.data),
     }
 
 };
