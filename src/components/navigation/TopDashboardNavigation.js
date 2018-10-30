@@ -2,7 +2,7 @@ import React from 'react';
 import propTypes from 'prop-types';
 import { connect } from 'react-redux';
 import gravatarUrl from 'gravatar-url';
-import {Menu, Dropdown,DropdownItem,Image, DropdownMenu} from 'semantic-ui-react';
+import {Menu, Dropdown,DropdownItem,Image, DropdownMenu, MenuItem} from 'semantic-ui-react';
 import {Link} from 'react-router-dom';
 
 import * as actions from '../../actions/Auth';
@@ -14,6 +14,7 @@ const TopDashboardNavigation = ({auth,logout}) => (
             <Menu.Item as={Link} to="/dashboard">Dashboard</Menu.Item>
 
             <Menu.Menu position="right">
+                <MenuItem><Link to="dashboard/books">Books</Link></MenuItem>
                 <Dropdown trigger={<Image avatar src={gravatarUrl(auth.user.email)}/>}>
                     <DropdownMenu>
                         <DropdownItem onClick={()=>logout(auth.logoutToken)}>Logout</DropdownItem>
