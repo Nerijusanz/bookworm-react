@@ -1,3 +1,4 @@
+// --------------------AUTH---------------------------------------
 export const AUTH_LOGGED_IN_YES = 'AUTH_LOGGED_IN_YES';
 export const AUTH_LOGGED_IN_NO = 'AUTH_LOGGED_IN_NO';
 
@@ -30,6 +31,11 @@ export const AUTH_LOADING_STOP = 'AUTH_LOADING_STOP';
 
 export const AUTH_ERROR = 'AUTH_ERROR';
 
+// ----------------------------------------------------------------------------
 
+
+// ----------------FLASH MESSAGE-------------------------------
 export const ADD_FLASH_MESSAGE = "ADD_FLASH_MESSAGE";
 export const DELETE_FLASH_MESSAGE = "DELETE_FLASH_MESSAGE";
+// ------------------------------------------------------------
+
