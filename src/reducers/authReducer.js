@@ -1,4 +1,4 @@
-import jwt_decode from 'jwt-decode';
+import jwtDecode from 'jwt-decode';
 import { 
     AUTH_LOGGED_IN_YES,
     AUTH_LOGGED_IN_NO,
@@ -57,7 +57,7 @@ export default function auth(state=initialState,action){
                 ...state,
                 token: action.payload.token,    // expiration time: on
                 logoutToken: action.payload.logoutToken,    // expiration time: off
-                user: jwt_decode(action.payload.token),
+                user: jwtDecode(action.payload.token),
                 serverErrors:{},
                 success:true,
                 loading:false
@@ -94,7 +94,7 @@ export default function auth(state=initialState,action){
                 ...state,
                 token: action.payload.token,    // expiration time: on
                 logoutToken: action.payload.logoutToken,    // expiration time: off
-                user: jwt_decode(action.payload.token),
+                user: jwtDecode(action.payload.token),
                 serverErrors:{},
                 success:true,
                 loading:false
