@@ -1,7 +1,7 @@
 import {
     BOOK_LOADING_START,
     BOOK_LOADING_STOP,
-    
+
     BOOK_ERROR,
 
     BOOK_SEARCH_BOOKS_STATUS_YES,
@@ -17,6 +17,7 @@ const initialState={
     serverErrors:{},
     books:[],
     searchBookObj:{
+        selectedBookStatus:false,
         searchDropdownOptions:[]
     },
     
@@ -50,6 +51,7 @@ export default function books(state=initialState,action){
                 books: action.payload.books,
                 searchBookObj:{
                     ...state.searchBookObj,
+
                     searchDropdownOptions: action.payload.searchDropdownOptions
                 },
                 loading:false
@@ -72,6 +74,7 @@ export default function books(state=initialState,action){
                 books: action.payload.books,
                 searchBookObj:{
                     ...state.searchBookObj,
+                    selectedBookStatus:true,
                     searchDropdownOptions: action.payload.searchDropdownOptions
                 },
                 loading: false
@@ -80,6 +83,10 @@ export default function books(state=initialState,action){
         case BOOK_SEARCH_SELECTED_BOOK_STATUS_NO:
             return {
                 ...state,
+                searchBookObj:{
+                    ...state.searchBookObj,
+                    selectedBookStatus:false,
+                },
                 loading:false
             }
 

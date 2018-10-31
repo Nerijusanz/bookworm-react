@@ -3,25 +3,35 @@ import propTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Segment } from 'semantic-ui-react';
 
-import ListBooks from './ListBooks';
-import {AddBookLink} from './BooksLink';
-import SearchBook from './SearchBook'; 
+// import ListBooks from './ListBooks';
+// import {AddBookLink} from './BooksLink';
+import ServerError from '../../../messages/ServerError';
+import SearchBook from './SearchBook';
+import AddBook from './AddBook'; 
 
 
 class Books extends Component {
+
+  state={}
   
   render() {
+    // -------------------------state-------------------
+    const {serverErrors} = this.props.book; // redux: book reducer
+    // ------------------------------------------------
+
+    const serverErrorContent = serverErrors.global && <ServerError errors={serverErrors.global} />
+
+    const addBookForm = this.props.book.searchBookObj.selectedBookStatus && <Segment><AddBook/></Segment>
 
     return (
       <div>
-        <div>
-          <SearchBook/>
-          <AddBookLink/>
-          </div>
+        
+        {serverErrorContent}
 
-        <Segment>
-          <ListBooks/> 
-        </Segment>
+        <SearchBook/>
+
+        {addBookForm}
+
       </div>
     )
   }
@@ -30,7 +40,15 @@ class Books extends Component {
 Books.propTypes={
 
     book: propTypes.shape({
-      books: propTypes.array.isRequired
+
+      serverErrors: propTypes.shape({
+        global: propTypes.arr,
+      }).isRequired,
+
+      searchBookObj: propTypes.shape({
+        selectedBookStatus: propTypes.bool.isRequired,
+      }).isRequired
+      
     }).isRequired
   
 }

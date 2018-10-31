@@ -68,7 +68,9 @@ export const searchBook = (query) => (dispatch) => {
                 searchDropdownOptions
             };
 
+            
             dispatch(bookSearchBook(true,searchBookObj));
+            dispatch(bookSearchBookSelected(false));
 
         })
         .catch(err=>{
