@@ -26,6 +26,7 @@ export const books = () => (dispatch) => {}
 
 export const addBook = () => (dispatch) => {}
 
+
 export const searchBook = (query) => (dispatch) => {
 
     dispatch(bookLoading(true));
@@ -33,15 +34,12 @@ export const searchBook = (query) => (dispatch) => {
     api.books.searchBook(query)
         .then(res=>{
 
-            const options=[];
-            const booksHash=[];
-
+            const searchDropdownOptions=[];
+            
             res.books.forEach(book => {
 
-                // booksHash[book.goodreadsId] = book;
-                booksHash.push(book);
-
-                options.push({
+                // books values for search dropdown element
+                searchDropdownOptions.push({
                     key: book.goodreadsId,
                     value: book.goodreadsId,
                     text: book.title
@@ -49,36 +47,19 @@ export const searchBook = (query) => (dispatch) => {
 
             });
 
-
             const searchBookObj={
-                books:booksHash,
-                options
+                books:res.books,
+                searchDropdownOptions
             };
 
             dispatch(bookSearchBook(true,searchBookObj));
 
         })
-        .catch(()=>{
-
-            dispatch(bookSearchBook(false));
-
-        })
-
-/*
-    dispatch(authLoading(true));
-
-    api.auth.signup(data)
-        .then(()=>{
-
-            dispatch(authSignup(true));
-
-        })
         .catch(err=>{
 
-            dispatch(authSignup(false));
-
-            dispatch(authError(err.response.data.errors));
-
+            dispatch(bookSearchBook(false));
+            console.log(err.response.data);
+            // dispatch(authError(err.response.data.errors))
         })
-*/
+
 }

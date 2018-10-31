@@ -10,7 +10,7 @@ const initialState={
     loading:false,
     books:[],
     searchBookObj:{
-        options:[]
+        searchDropdownOptions:[]
     },
     
 };
@@ -33,10 +33,10 @@ export default function books(state=initialState,action){
         case BOOK_SEARCH_BOOKS_STATUS_YES:
             return {
                 ...state,
-                books:action.payload.books,
+                books: action.payload.books,
                 searchBookObj:{
                     ...state.searchBookObj,
-                    options:action.payload.options
+                    searchDropdownOptions: action.payload.searchDropdownOptions
                 },
                 loading:false
             }
@@ -45,7 +45,10 @@ export default function books(state=initialState,action){
             return {
                 ...state,
                 books:[],
-                searchBookObj:{},
+                searchBookObj:{
+                    ...state.searchBookObj,
+                    searchDropdownOptions:[],
+                },
                 loading:false
             }
 

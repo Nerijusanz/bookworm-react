@@ -8,30 +8,25 @@ import {searchBook} from '../../../../actions/Books';
 class SearchBook extends Component {
 
     state={
-        query:'',
-        options:[
-            {key:1,value:1,text:"first"},
-            {key:2,value:2,text:'second'}
-        ]
-
-        
-
+        query:''        
     }
 
     onSearchChangeHandler = (e) => {
 
         e.preventDefault();
 
-        clearTimeout(this.timer);
+        // clean out older timer if exists
+        if(this.timer) clearTimeout(this.timer);
 
-        const queryVal = e.target.value;
-
+        const query = e.target.value;
+        // trigger new timer
         this.timer = setTimeout(()=>{
-            // note: do axios query to server after 1s, when stop search typing!!!
-            this.setState({query:queryVal});
-            this.props.searchBook(queryVal)
+            // note: do axios call to server after 1s, when stop input typing!!!
+            this.setState({query});
+            this.props.searchBook(query)
 
-        },1000);    
+        },1000);
+
     }
 
     onChangeHandler = (e) => {
@@ -53,7 +48,7 @@ class SearchBook extends Component {
             value={this.state.query}
             onSearchChange={this.onSearchChangeHandler}
             onChange={this.onChangeHandler}
-            options={searchBookObj.options}
+            options={searchBookObj.searchDropdownOptions}
             loading={loading}
              />
         </Form>
@@ -67,7 +62,7 @@ SearchBook.propTypes={
         loading: propTypes.bool.isRequired,
         books: propTypes.array.isRequired,
         searchBookObj: propTypes.shape({
-            options: propTypes.array.isRequired,
+            searchDropdownOptions: propTypes.array.isRequired,
         }).isRequired,
     }).isRequired,
     searchBook: propTypes.func.isRequired
