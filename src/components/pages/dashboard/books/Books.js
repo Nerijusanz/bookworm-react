@@ -14,8 +14,10 @@ class Books extends Component {
 
     return (
       <div>
-        <div><AddBookLink/></div>
-        <div><SearchBook/></div>
+        <div>
+          <SearchBook/>
+          <AddBookLink/>
+          </div>
 
         <Segment>
           <ListBooks/> 

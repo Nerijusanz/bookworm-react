@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import propTypes from 'prop-types';
 import {connect} from 'react-redux';
-import { Form,Dropdown } from 'semantic-ui-react';
+import { Form,Card,CardContent,Dropdown } from 'semantic-ui-react';
 
-import {searchBook} from '../../../../actions/Books';
+import {searchBook,searchBookSelected} from '../../../../actions/Books';
 
 class SearchBook extends Component {
 
@@ -29,29 +29,46 @@ class SearchBook extends Component {
 
     }
 
-    onChangeHandler = (e) => {
+    onChangeHandler = (e,item) => {
 
         e.preventDefault();
+
+        this.setState({[item.name]:item.value});
+
+        const selectedBookObj = this.props.book.books.filter(book=>book.goodreadsId === item.value);
+
+        this.props.searchBookSelected(selectedBookObj);
+        
     }
 
   render() {
 
     // -------------------state------------------
     const {loading,searchBookObj} = this.props.book;  // redux bookReducer 
-    //--------------------------------------------
+    // --------------------------------------------
 
-    return (
-      <div>
-        <Form>
-        <Dropdown search fluid 
+    const dropdown =
+        <Dropdown search fluid selection
             placeholder="search book"
+            name="query"
             value={this.state.query}
             onSearchChange={this.onSearchChangeHandler}
             onChange={this.onChangeHandler}
             options={searchBookObj.searchDropdownOptions}
             loading={loading}
-             />
-        </Form>
+        />
+
+
+    return (
+      <div>
+        <Card fluid>
+            <CardContent textAlign="center">
+                <Form>
+                    {dropdown}
+                </Form>
+            </CardContent>
+        </Card>
+
       </div>
     )
   }
@@ -65,7 +82,8 @@ SearchBook.propTypes={
             searchDropdownOptions: propTypes.array.isRequired,
         }).isRequired,
     }).isRequired,
-    searchBook: propTypes.func.isRequired
+    searchBook: propTypes.func.isRequired,
+    searchBookSelected: propTypes.func.isRequired,
 }
 
 function  mapStateToProps(state){
@@ -76,4 +94,4 @@ function  mapStateToProps(state){
 }
 
 
-export default connect(mapStateToProps,{searchBook})(SearchBook);
+export default connect(mapStateToProps,{searchBook,searchBookSelected})(SearchBook);

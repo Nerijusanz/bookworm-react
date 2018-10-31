@@ -1,11 +1,15 @@
-import axios from 'axios';
 import api from '../api/api';
 import {
     BOOK_LOADING_START,
     BOOK_LOADING_STOP,
+
+    BOOK_ERROR,
     
     BOOK_SEARCH_BOOKS_STATUS_YES,
     BOOK_SEARCH_BOOKS_STATUS_NO,
+
+    BOOK_SEARCH_SELECTED_BOOK_STATUS_YES,
+    BOOK_SEARCH_SELECTED_BOOK_STATUS_NO
 } from './types';
 
 
@@ -15,6 +19,13 @@ const bookLoading = (status) => ({
 
 });
 
+export const bookError = (errors) => ({
+    
+    type: BOOK_ERROR,
+    payload:errors
+    
+});
+
 const bookSearchBook = (status,book={}) => ({ 
 
     type:(status)? BOOK_SEARCH_BOOKS_STATUS_YES : BOOK_SEARCH_BOOKS_STATUS_NO,
@@ -22,7 +33,12 @@ const bookSearchBook = (status,book={}) => ({
 
 });
 
-export const books = () => (dispatch) => {}
+const bookSearchBookSelected = (status,book={}) => ({ 
+
+    type:(status)? BOOK_SEARCH_SELECTED_BOOK_STATUS_YES : BOOK_SEARCH_SELECTED_BOOK_STATUS_NO,
+    payload:book
+
+});
 
 export const addBook = () => (dispatch) => {}
 
@@ -58,8 +74,36 @@ export const searchBook = (query) => (dispatch) => {
         .catch(err=>{
 
             dispatch(bookSearchBook(false));
-            console.log(err.response.data);
-            // dispatch(authError(err.response.data.errors))
+            dispatch(bookError(err.response.data.errors))
         })
+
+}
+
+
+export const searchBookSelected = (bookObj) => (dispatch) => {
+    // user seleceted book on dropdown list. get selected book object
+    dispatch(bookLoading(true));
+
+    if(!bookObj){
+        dispatch(bookSearchBookSelected(false));
+        return;
+    }
+
+    const searchDropdownOptions=[];
+
+    searchDropdownOptions.push({
+        key: bookObj[0].goodreadsId,
+        value: bookObj[0].goodreadsId,
+        text: bookObj[0].title
+    });
+
+    const searchBookObj={
+        books:bookObj,
+        searchDropdownOptions
+    };
+
+    
+    dispatch(bookSearchBookSelected(true,searchBookObj));
+
 
 }
