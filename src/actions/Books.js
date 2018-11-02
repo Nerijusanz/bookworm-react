@@ -9,7 +9,11 @@ import {
     BOOK_SEARCH_BOOKS_STATUS_NO,
 
     BOOK_SEARCH_SELECTED_BOOK_STATUS_YES,
-    BOOK_SEARCH_SELECTED_BOOK_STATUS_NO
+    BOOK_SEARCH_SELECTED_BOOK_STATUS_NO,
+
+    BOOK_SEARCH_SELECTED_BOOK_SAVE_STATUS_YES,
+    BOOK_SEARCH_SELECTED_BOOK_SAVE_STATUS_NO,
+
 } from './types';
 
 
@@ -40,7 +44,37 @@ const bookSearchBookSelected = (status,book={}) => ({
 
 });
 
-export const addBook = () => (dispatch) => {}
+const bookSearchBookSelectedSave = (status,book={}) => ({ 
+
+    type:(status)? BOOK_SEARCH_SELECTED_BOOK_SAVE_STATUS_YES : BOOK_SEARCH_SELECTED_BOOK_SAVE_STATUS_NO,
+    payload:book
+
+});
+
+
+
+
+export const addBook = (book) => (dispatch) => {
+    
+    dispatch(bookLoading(true));
+    
+    api.books.addBook(book)
+        .then(()=>{
+
+            dispatch(bookSearchBookSelectedSave(true,book))
+
+        })
+        .catch(err=>{
+
+            dispatch(bookSearchBookSelectedSave(false));
+
+            dispatch(bookError(err.response.data.errors));
+
+        })
+        
+ 
+}
+
 
 
 export const searchBook = (query) => (dispatch) => {
@@ -58,7 +92,8 @@ export const searchBook = (query) => (dispatch) => {
                 searchDropdownOptions.push({
                     key: book.goodreadsId,
                     value: book.goodreadsId,
-                    text: book.title
+                    text: book.title,
+                    image: { avatar: true, src: book.covers[0] }
                 });
 
             });

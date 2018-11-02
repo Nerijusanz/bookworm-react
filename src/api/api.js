@@ -32,6 +32,8 @@ export default{
             axios.get("/api/books").then(res=>res.data),
         searchBook:(query)=>
             axios.get(`/api/books/search?q=${query}`).then(res=>res.data),
+        addBook:(book)=>
+            axios.post('/api/books/add',{book}),
     }
 
 };

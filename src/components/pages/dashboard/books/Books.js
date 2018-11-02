@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import propTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Segment } from 'semantic-ui-react';
 
-// import ListBooks from './ListBooks';
-// import {AddBookLink} from './BooksLink';
+
+
 import ServerError from '../../../messages/ServerError';
-import SearchBook from './SearchBook';
-import AddBook from './AddBook'; 
+import SearchBlock from './SearchBlock';
+import AddBook from './AddBook';
+// import ListBooks from './ListBooks';
 
 
 class Books extends Component {
@@ -21,16 +21,18 @@ class Books extends Component {
 
     const serverErrorContent = serverErrors.global && <ServerError errors={serverErrors.global} />
 
-    const addBookForm = this.props.book.searchBookObj.selectedBookStatus && <Segment><AddBook/></Segment>
+    const selectedAddBookForm = this.props.book.searchBookObj.selectedBookStatus && <AddBook/>
+
+    // const listBooks = (!this.props.book.searchBookObj.selectedBookStatus && this.props.book.books) && <ListBooks/>
 
     return (
       <div>
         
         {serverErrorContent}
+        <SearchBlock/>
+          
+          {selectedAddBookForm}
 
-        <SearchBook/>
-
-        {addBookForm}
 
       </div>
     )
@@ -45,8 +47,11 @@ Books.propTypes={
         global: propTypes.arr,
       }).isRequired,
 
+      books: propTypes.arr,
+
       searchBookObj: propTypes.shape({
         selectedBookStatus: propTypes.bool.isRequired,
+        savedBookStatus: propTypes.bool.isRequired,
       }).isRequired
       
     }).isRequired

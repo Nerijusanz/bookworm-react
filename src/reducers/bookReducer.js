@@ -7,9 +7,12 @@ import {
     BOOK_SEARCH_BOOKS_STATUS_YES,
     BOOK_SEARCH_BOOKS_STATUS_NO,
 
-
     BOOK_SEARCH_SELECTED_BOOK_STATUS_YES,
     BOOK_SEARCH_SELECTED_BOOK_STATUS_NO,
+
+    BOOK_SEARCH_SELECTED_BOOK_SAVE_STATUS_YES,
+    BOOK_SEARCH_SELECTED_BOOK_SAVE_STATUS_NO,
+
 } from '../actions/types';
 
 const initialState={
@@ -18,6 +21,7 @@ const initialState={
     books:[],
     searchBookObj:{
         selectedBookStatus:false,
+        savedBookStatus:false,
         searchDropdownOptions:[]
     },
     
@@ -88,6 +92,17 @@ export default function books(state=initialState,action){
                     selectedBookStatus:false,
                 },
                 loading:false
+            }
+
+
+        case BOOK_SEARCH_SELECTED_BOOK_SAVE_STATUS_YES:
+            return {
+                ...state
+            }
+
+        case BOOK_SEARCH_SELECTED_BOOK_SAVE_STATUS_NO:
+            return {
+                ...state
             }
 
         default:return state;

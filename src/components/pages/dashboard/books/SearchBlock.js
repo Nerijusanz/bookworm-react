@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 import propTypes from 'prop-types';
 import {connect} from 'react-redux';
-import { Form,Card,CardContent,Dropdown } from 'semantic-ui-react';
+import { Segment,Dropdown } from 'semantic-ui-react';
 
 import {searchBook,searchBookSelected} from '../../../../actions/Books';
 
-class SearchBook extends Component {
+class SearchBlock extends Component {
 
     state={
         query:''        
@@ -60,21 +60,12 @@ class SearchBook extends Component {
 
 
     return (
-      <div>
-        <Card fluid>
-            <CardContent textAlign="center">
-                <Form>
-                    {dropdown}
-                </Form>
-            </CardContent>
-        </Card>
-
-      </div>
+        <Segment>{dropdown}</Segment>
     )
   }
 }
 
-SearchBook.propTypes={
+SearchBlock.propTypes={
     book: propTypes.shape({
         loading: propTypes.bool.isRequired,
         books: propTypes.array.isRequired,
@@ -94,4 +85,4 @@ function  mapStateToProps(state){
 }
 
 
-export default connect(mapStateToProps,{searchBook,searchBookSelected})(SearchBook);
+export default connect(mapStateToProps,{searchBook,searchBookSelected})(SearchBlock);

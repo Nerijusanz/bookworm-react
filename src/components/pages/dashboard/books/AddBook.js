@@ -2,14 +2,16 @@ import React, { Component } from 'react';
 import propTypes from 'prop-types';
 import {connect} from 'react-redux';
 
-import { Form,Button,Image,Grid, GridRow, GridColumn } from 'semantic-ui-react';
+import { Segment,Form,Button,Image,Grid, GridRow, GridColumn } from 'semantic-ui-react';
+
+import {addBook} from '../../../../actions/Books';
 
 
 class AddBook extends Component {
 
     state={
         data:{
-            id:'',
+            goodreadsId:'',
             title:'',
             author:'',
             covers:'',
@@ -27,6 +29,7 @@ class AddBook extends Component {
 
     e.preventDefault();
     
+    this.props.addBook(this.state.data);
 
   }
 
@@ -39,7 +42,7 @@ class AddBook extends Component {
     this.setState({
         data:{
             ...this.state.data,
-            id: book.goodreadsId,
+            goodreadsId: book.goodreadsId,
             title: book.title,
             author: book.author,
             covers: book.covers,
@@ -55,7 +58,7 @@ class AddBook extends Component {
 
         const covers = this.state.data.covers;
 
-        if(!covers && covers.length <1) return;
+        if(!covers && covers.length < 1) return;
 
         const bookCovers = covers.map((cover,index)=>
             <Image key={index} size="small" src={cover} />
@@ -78,7 +81,8 @@ class AddBook extends Component {
     
 
     const content = 
-        
+        <Segment>
+            
         <Form onSubmit={this.onSubmitHandler} loading={loading} >
 
             <Grid columns={2} stackable>
@@ -132,9 +136,9 @@ class AddBook extends Component {
 
             </Grid>
 
-            
-
         </Form>
+
+        </Segment>
 
     return (
       <div>
@@ -155,7 +159,7 @@ AddBook.propTypes = {
       books: propTypes.array.isRequired,
 
   }).isRequired,
-
+  addBook: propTypes.func.isRequired,
 }
 
 
@@ -167,4 +171,4 @@ function mapStateToProps(state){
 }
 
 
-export default connect(mapStateToProps,{})(AddBook);
+export default connect(mapStateToProps,{addBook})(AddBook);
