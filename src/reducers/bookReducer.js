@@ -21,7 +21,7 @@ const initialState={
     books:[],
     searchBookObj:{
         selectedBookStatus:false,
-        savedBookStatus:false,
+        selectedBookSaveStatus:false,
         searchDropdownOptions:[]
     },
     
@@ -97,12 +97,20 @@ export default function books(state=initialState,action){
 
         case BOOK_SEARCH_SELECTED_BOOK_SAVE_STATUS_YES:
             return {
-                ...state
+                ...state,
+                searchBookObj:{
+                    ...state.searchBookObj,
+                    selectedBookSaveStatus:true,
+                }
             }
 
         case BOOK_SEARCH_SELECTED_BOOK_SAVE_STATUS_NO:
             return {
-                ...state
+                ...state,
+                searchBookObj:{
+                    ...state.searchBookObj,
+                    selectedBookSaveStatus:false,
+                }
             }
 
         default:return state;
