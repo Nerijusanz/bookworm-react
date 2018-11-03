@@ -55,7 +55,8 @@ export default function books(state=initialState,action){
                 books: action.payload.books,
                 searchBookObj:{
                     ...state.searchBookObj,
-
+                    selectedBookStatus:false,
+                    selectedBookSaveStatus:false,
                     searchDropdownOptions: action.payload.searchDropdownOptions
                 },
                 loading:false
@@ -67,6 +68,8 @@ export default function books(state=initialState,action){
                 books:[],
                 searchBookObj:{
                     ...state.searchBookObj,
+                    selectedBookStatus:false,
+                    selectedBookSaveStatus:false,
                     searchDropdownOptions:[],
                 },
                 loading:false
@@ -79,6 +82,7 @@ export default function books(state=initialState,action){
                 searchBookObj:{
                     ...state.searchBookObj,
                     selectedBookStatus:true,
+                    selectedBookSaveStatus:false,
                     searchDropdownOptions: action.payload.searchDropdownOptions
                 },
                 loading: false
@@ -100,6 +104,7 @@ export default function books(state=initialState,action){
                 ...state,
                 searchBookObj:{
                     ...state.searchBookObj,
+                    selectedBookStatus:false,
                     selectedBookSaveStatus:true,
                 }
             }

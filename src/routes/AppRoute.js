@@ -18,11 +18,13 @@ import SignupConfirmationPage from '../components/pages/auth/SignupConfirmationP
 import ForgotPasswordPage from '../components/pages/auth/ForgotPasswordPage';
 import ResetPasswordPage from '../components/pages/auth/ResetPasswordPage';
 
+
+import DashboardPage from '../components/pages/dashboard/DashboardPage';
+
 import Books from '../components/pages/dashboard/books/Books';
 import AddBook from '../components/pages/dashboard/books/AddBook';
 
-
-import DashboardPage from '../components/pages/dashboard/DashboardPage';
+import UserBooks from '../components/pages/dashboard/userbooks/UserBooks';
 
 // -----------------end Pages----------------------------------------
 
@@ -48,16 +50,21 @@ class AppRoute extends Component {
         <div>
           <Switch>
             <Route location={this.props.location} path="/" exact component={HomePage} />    
-
+            
             <GuestRoute location={this.props.location} path="/signup" exact component={SignupPage} />
             <GuestRoute location={this.props.location} path="/signup_confirmation_token/:token" exact component={SignupConfirmationPage} /> 
             <GuestRoute location={this.props.location} path="/forgot_password" exact component={ForgotPasswordPage} />
             <GuestRoute location={this.props.location} path="/reset_password_token/:token" exact component={ResetPasswordPage} />
             <GuestRoute location={this.props.location} path="/login" exact component={LoginPage} />
 
+            <AuthRoute location={this.props.location} path="/dashboard_books_add" exact component={AddBook} />
+            <AuthRoute location={this.props.location} path="/dashboard_books" exact component={Books} />
             <AuthRoute location={this.props.location} path="/dashboard" exact component={DashboardPage} />
-            <AuthRoute location={this.props.location} path="/dashboard/books" exact component={Books} />
-            <AuthRoute location={this.props.location} path="/dashboard/books/add" exact component={AddBook} />
+
+            <AuthRoute location={this.props.location} path="/dashboard_userbooks" exact component={UserBooks} />
+
+            
+
 
             <Route component={NotFoundRedirect} />
 

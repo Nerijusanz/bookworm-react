@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import propTypes from 'prop-types';
 import { connect } from 'react-redux';
-
+import {Redirect} from 'react-router-dom';
 
 
 import ServerError from '../../../messages/ServerError';
 import SearchBlock from './SearchBlock';
 import AddBook from './AddBook';
-// import ListBooks from './ListBooks';
 
 
 class Books extends Component {
@@ -23,7 +22,7 @@ class Books extends Component {
 
     const selectedAddBookForm = this.props.book.searchBookObj.selectedBookStatus && <AddBook/>
 
-    // const listBooks = (!this.props.book.searchBookObj.selectedBookStatus && this.props.book.books) && <ListBooks/>
+    const userBooks = this.props.book.searchBookObj.selectedBookSaveStatus && <Redirect to="/dashboard_userbooks" />
 
     return (
       <div>
@@ -33,6 +32,7 @@ class Books extends Component {
           
           {selectedAddBookForm}
 
+          {userBooks}
 
       </div>
     )
@@ -51,7 +51,7 @@ Books.propTypes={
 
       searchBookObj: propTypes.shape({
         selectedBookStatus: propTypes.bool.isRequired,
-        savedBookStatus: propTypes.bool.isRequired,
+        selectedBookSaveStatus: propTypes.bool.isRequired,
       }).isRequired
       
     }).isRequired

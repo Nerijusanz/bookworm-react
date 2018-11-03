@@ -58,10 +58,10 @@ export const addBook = (book) => (dispatch) => {
     
     dispatch(bookLoading(true));
     
-    api.books.addBook(book)
+    api.userbook.addBook(book)
         .then(()=>{
 
-            dispatch(bookSearchBookSelectedSave(true,book))
+            dispatch(bookSearchBookSelectedSave(true))
 
         })
         .catch(err=>{
@@ -81,7 +81,7 @@ export const searchBook = (query) => (dispatch) => {
 
     dispatch(bookLoading(true));
 
-    api.books.searchBook(query)
+    api.booksApi.searchBook(query)
         .then(res=>{
 
             const searchDropdownOptions=[];

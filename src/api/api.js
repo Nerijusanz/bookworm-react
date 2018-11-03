@@ -27,11 +27,14 @@ export default{
         page:()=>
             axios.get("/api/dashboard"),
     },
-    books:{
-        books:()=>
-            axios.get("/api/books").then(res=>res.data),
+    booksApi:{
         searchBook:(query)=>
-            axios.get(`/api/books/search?q=${query}`).then(res=>res.data),
+            axios.get(`/api/books_api/search?q=${query}`).then(res=>res.data),
+
+    },
+    userbook:{
+        books:() => 
+            axios.get("/api/books").then(res=>res.data),
         addBook:(book)=>
             axios.post('/api/books/add',{book}),
     }

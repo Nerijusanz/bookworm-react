@@ -4,41 +4,47 @@ import {connect} from 'react-redux';
 
 import { Segment,Image,Grid, GridRow, GridColumn } from 'semantic-ui-react';
 
+import {getBooks} from '../../../../actions/UserBook';
+
+
 class UserBooks extends Component {
 
-  onClickBookHandler = () => {
 
-    console.log('clicked');
+  componentDidMount(){
 
-    
-    /*
-    const selectedBookObj = this.props.book.books.filter(book=>book.goodreadsId === item.value);
+    this.getBooks();
 
-    this.props.searchBookSelected(selectedBookObj);
-    */
-    
-}
+  }
+
+
+  getBooks = () => {
+
+    this.props.getBooks();
+
+  }
 
   generateList = () => {
 
-    const books = this.props.book.books;
+    const userbooks = this.props.userbook.books;
 
-    if(books.length < 1) return;
+    if(userbooks.length < 1)
+      return <GridRow><p>books list empty</p></GridRow>;
+    
 
-    const booksList = books.map((book,index)=>
+    const userbooksList = userbooks.map((book,index)=>
         <GridRow key={index}>
           <GridColumn>
-            <a onClick={this.onClickBookHandler}><h2>{book.title}</h2></a>
+            <h2>{book.title}</h2>
             <p><span>author:</span>&nbsp;{book.author}</p>
             <p><span>pages:</span>&nbsp;{book.pages}</p>
           </GridColumn>
           <GridColumn>
-            <Image size="small" src={book.covers[0]} />
+            <Image size="small" src={book.cover} />
           </GridColumn>
         </GridRow>
     );
 
-    return booksList;
+    return userbooksList;
 
   }
 
@@ -46,12 +52,12 @@ class UserBooks extends Component {
 
   render() {
 
-    const booksList = this.generateList();
+    const userbooks = this.generateList();
 
     return (
       <Segment>
         <Grid columns={2} stackable>
-          {booksList}
+          {userbooks}
         </Grid>
       </Segment>
     )
@@ -60,12 +66,11 @@ class UserBooks extends Component {
 
 UserBooks.propTypes = {
 
-  book: propTypes.shape({
-
-      loading: propTypes.bool.isRequired,
+  userbook: propTypes.shape({
       books: propTypes.array.isRequired,
-
   }).isRequired,
+  getBooks: propTypes.func.isRequired,
+
 
 }
 
@@ -73,9 +78,9 @@ UserBooks.propTypes = {
 function mapStateToProps(state){
 
   return {
-      book: state.book
+      userbook: state.userbook
   }
 }
 
 
-export default connect(mapStateToProps,{})(UserBooks);
+export default connect(mapStateToProps,{getBooks})(UserBooks);

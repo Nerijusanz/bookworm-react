@@ -21,20 +21,20 @@ class AddBook extends Component {
 
     componentDidMount(){
 
-        this.fillFormData();
+        this.selectedBookData();
 
     }
 
   onSubmitHandler = (e) => {
 
     e.preventDefault();
-    
+    // data from booksApi. no need validation on front-end. inputs are readonly. user can`t change
     this.props.addBook(this.state.data);
 
   }
 
-  fillFormData = () => {
-
+  selectedBookData = () => {
+    // selected book in array
     if(!this.props.book.books[0]) return;
 
     const book = this.props.book.books[0];

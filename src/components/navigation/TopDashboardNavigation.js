@@ -11,10 +11,12 @@ import * as actions from '../../actions/Auth';
 const TopDashboardNavigation = ({auth,logout}) => (
 
         <Menu secondary pointing>
+
             <Menu.Item as={Link} to="/dashboard">Dashboard</Menu.Item>
 
             <Menu.Menu position="right">
-                <MenuItem><Link to="dashboard/books">Books</Link></MenuItem>
+                <MenuItem><Link to="dashboard_userbooks">MyBooks</Link></MenuItem>
+                <MenuItem><Link to="dashboard_books">BooksAPI</Link></MenuItem>
                 <Dropdown trigger={<Image avatar src={gravatarUrl(auth.user.email)}/>}>
                     <DropdownMenu>
                         <DropdownItem onClick={()=>logout(auth.logoutToken)}>Logout</DropdownItem>
