@@ -105,14 +105,19 @@ export const authResetPassword = (status) => ({
 
 export const setAuthorizationHeader = token => {
 
-    if(token)
-        axios.defaults.headers.common.Authorization = `Bearer ${token}`;
-         
+    if(!token || token === 'undefined') return;
+
+    axios.defaults.headers.common.Authorization = `Bearer ${token}`;
+
+    localStorage.setItem(process.env.REACT_APP_LOCAL_STORAGE_TOKEN,token); // save token on browser local storage;
+    
 }
 
 export const deleteAuthorizationHeader = () =>{
 
     delete axios.defaults.headers.common.Authorization;
+
+    localStorage.removeItem(process.env.REACT_APP_LOCAL_STORAGE_TOKEN);
 
 }
 
@@ -126,8 +131,6 @@ export const login = (credentials) => (dispatch) =>{
 
     api.auth.login(credentials)
         .then(user=>{   // login on server-side process OK;
-
-            localStorage.setItem('bookwormUserToken',user.token); // save token on browser local storage;
 
             setAuthorizationHeader(user.token); // add token to request header
 
@@ -155,16 +158,12 @@ export const authenticationCheck = () => (dispatch) => {
     api.auth.authenticationCheck()
         .then(user=>{
 
-            localStorage.setItem('bookwormUserToken',user.token); // save token on browser local storage;
-
             setAuthorizationHeader(user.token); // add token to request header
 
             dispatch(authAuthentication(true,user));   // redux login
 
         })
         .catch(()=>{
-
-                localStorage.removeItem('bookwormUserToken');
         
                 deleteAuthorizationHeader();
     
@@ -182,8 +181,6 @@ export const logout = (logoutToken) => (dispatch) => {
 
     api.auth.logout(logoutToken)
         .then(()=>{
-
-            localStorage.removeItem('bookwormUserToken');
     
             deleteAuthorizationHeader();
 
