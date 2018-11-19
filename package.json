@@ -5,7 +5,6 @@
   "dependencies": {
     "axios": "^0.18.0",
     "classnames": "^2.2.6",
-    "dotenv": "^6.1.0",
     "eslint": "^5.5.0",
     "eslint-config-airbnb": "^15.1.0",
     "eslint-config-prettier": "^3.0.1",
@@ -37,8 +36,14 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "lint": "eslint src"
+    "lint": "eslint src",
+    "server": "cd ../bookworm-api && npm run start",
+    "client": "npm run start",
+    "dev": "npm run server & npm run client"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "enzyme": "^3.7.0",
+    "enzyme-adapter-react-16": "^1.7.0"
+  },
   "proxy": "http://localhost:8080"
 }
