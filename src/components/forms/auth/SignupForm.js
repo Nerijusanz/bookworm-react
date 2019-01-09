@@ -23,9 +23,7 @@ class SignupForm extends Component {
     }
 
     onChangeHanlder = (e) => {
-
-        e.preventDefault();
-        
+  
         this.setState({
             data:{...this.state.data,[e.target.name]:e.target.value}
         });
@@ -33,8 +31,6 @@ class SignupForm extends Component {
     }
 
     onBlurHandler = (e) =>{
-        
-        e.preventDefault();
 
         // ----------------CUSTOM VALIDATION EMAIL INPUT ON BLUR EVENT ---------------
         const validationErrors={};
@@ -46,6 +42,10 @@ class SignupForm extends Component {
         // check if got validation error
         if(Object.keys(validationErrors).length > 0){
             this.setState({
+                data:{
+                    ...this.state.data,
+                    [e.target.name]:e.target.value
+                },
                 validationErrors
             });
             
@@ -119,7 +119,7 @@ class SignupForm extends Component {
                     type="email"
                     id="email"
                     name="email"
-                    placeholder="example@example.com" 
+                    placeholder="email" 
                     value={data.email}
                     onChange={this.onChangeHanlder}
                     onBlur={this.onBlurHandler}
