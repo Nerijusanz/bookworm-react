@@ -4,26 +4,31 @@ import { connect } from 'react-redux';
 import {Link} from 'react-router-dom';
 import {logout} from '../../actions/Auth';
 
+
 class HomePage extends Component {
 
+    state
 
     render() {
       return (
         <div>
             <h1>HomePage</h1>
-            {this.props.isUserAuthenticated ? 
+            {
+            this.props.isAuthenticated ? 
                 <button onClick={()=>this.props.logout()}>logout</button> : 
                 
                 <p><Link to="/login">Login</Link>
                 <span>or</span>
-                <Link to="/signup">signup</Link></p>}
+                <Link to="/signup">signup</Link></p>
+            }
         </div>
       )
     }
   }
 
+
 HomePage.propTypes={
-    isUserAuthenticated: propTypes.bool.isRequired,
+    isAuthenticated: propTypes.bool.isRequired,
     logout: propTypes.func.isRequired,
 
 }
@@ -31,7 +36,7 @@ HomePage.propTypes={
 
 function mapStateToProps(state){
     return{
-        isUserAuthenticated: !!state.auth.token
+        isAuthenticated: !!state.auth.token
     }
 }
 
