@@ -52,7 +52,7 @@ export default function books(state=initialState,action){
         case BOOK_SEARCH_BOOKS_STATUS_YES:
             return {
                 ...state,
-                books: action.payload.books,
+                books: action.payload.books,    // state.books.concat(action.payload.books),
                 searchBookObj:{
                     ...state.searchBookObj,
                     selectedBookStatus:false,
