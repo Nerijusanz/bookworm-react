@@ -1,38 +1,19 @@
-import React, { Component } from 'react';
+import React from 'react';
 import propTypes from 'prop-types';
 import {connect} from 'react-redux';
 import LoginForm from '../../forms/auth/LoginForm';
 
 
-
-class LoginPage extends Component {
-
-  state={}
-
-  render() {
-
-    // ----------------state variables ------------------------
-    const {success} = this.props.auth; // redux: auth reducer
-    // --------------------------------------------------------
-
-    const content = success ? this.context.router.history.push('/dashboard') : <LoginForm />
-
-    return (
-      <div>
-        <h1>LoginPage</h1>
-          {content}
-      </div>
-    )
-  }
-}
-
+const LoginPage = ({isAuthenticatedToken}) => (
+  <div>
+    <h1>LoginPage</h1>
+    {isAuthenticatedToken ? this.context.router.history.push('/dashboard') : <LoginForm />}
+  </div>
+);
 
 LoginPage.propTypes = {
-  auth: propTypes.shape({
-
-      success: propTypes.bool.isRequired,
-
-  }).isRequired,
+  
+  isAuthenticatedToken: propTypes.bool.isRequired
 
 }
 
@@ -42,9 +23,8 @@ LoginPage.contextTypes = {
 
 
 function mapStateToProps(state){
-
-  return {
-      auth: state.auth
+  return{
+    isAuthenticatedToken: !!state.auth.token
   }
 }
 
