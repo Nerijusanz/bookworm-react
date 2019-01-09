@@ -13,5 +13,8 @@ const App = () => (
       <Route component={AppRoute} />
     </div>
   </div>
-)
+);
+
+
+
 export default App;
