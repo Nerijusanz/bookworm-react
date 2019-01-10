@@ -15,7 +15,14 @@ class SignupConfirmationPage extends Component {
 
     componentDidMount(){
         
-        this.props.signupConfirmationToken(this.props.match.params.token);
+        this.signupConfirmationToken();
+
+    }
+
+    signupConfirmationToken = () => {
+
+        if(this.props.match.params.token)
+            this.props.signupConfirmationToken(this.props.match.params.token);
 
     }
 
