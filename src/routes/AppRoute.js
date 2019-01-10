@@ -47,7 +47,7 @@ class AppRoute extends Component {
     const NotFoundRedirect = () => <Redirect to="/" />
     
     const routes = !loading &&
-        <div>
+        
           <Switch>
             <Route location={this.props.location} path="/" exact component={HomePage} />    
             
@@ -62,19 +62,16 @@ class AppRoute extends Component {
             <AuthRoute location={this.props.location} path="/dashboard" exact component={DashboardPage} />
 
             <AuthRoute location={this.props.location} path="/dashboard_userbooks" exact component={UserBooks} />
-
             
-
-
             <Route component={NotFoundRedirect} />
 
           </Switch>
-        </div>
 
     return (
-        <div>
+        <React.Fragment>
           {routes}
-        </div>
+        </React.Fragment>
+          
 
     )
   }
