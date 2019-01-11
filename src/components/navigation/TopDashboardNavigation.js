@@ -1,32 +1,43 @@
-import React from 'react';
+import React, { Component } from 'react';
 import propTypes from 'prop-types';
 import { connect } from 'react-redux';
 import gravatarUrl from 'gravatar-url';
-import {Menu, Dropdown,DropdownItem,Image, DropdownMenu, MenuItem} from 'semantic-ui-react';
 import {Link} from 'react-router-dom';
+import {Menu, Dropdown,DropdownItem,Image, DropdownMenu, MenuItem} from 'semantic-ui-react';
 
-import * as actions from '../../actions/Auth';
+import { logout } from '../../actions/Auth';
 
 
-const TopDashboardNavigation = ({auth,logout}) => (
+class TopDashboardNavigation extends Component {
 
-        <Menu secondary pointing>
+    logout = (logoutToken) => {
+        this.props.logout(logoutToken);
+    }
 
-            <Menu.Item as={Link} to="/dashboard">Dashboard</Menu.Item>
+  render() {
 
-            <Menu.Menu position="right">
-                <MenuItem><Link to="dashboard_userbooks">MyBooks</Link></MenuItem>
-                <MenuItem><Link to="dashboard_books">BooksAPI</Link></MenuItem>
-                <Dropdown trigger={<Image avatar src={gravatarUrl(auth.user.email)}/>}>
-                    <DropdownMenu>
-                        <DropdownItem onClick={()=>logout(auth.logoutToken)}>Logout</DropdownItem>
-                    </DropdownMenu>
-                </Dropdown>
-            </Menu.Menu>
-        </Menu>
+    const {auth} = this.props;
 
-);
+    return (
+        <React.Fragment>
+            <Menu secondary pointing>
 
+                <Menu.Item as={Link} to="/dashboard">Dashboard</Menu.Item>
+
+                <Menu.Menu position="right">
+                    <MenuItem><Link to="dashboard_userbooks">MyBooks</Link></MenuItem>
+                    <MenuItem><Link to="dashboard_books">BooksAPI</Link></MenuItem>
+                    <Dropdown trigger={<Image avatar src={gravatarUrl(auth.user.email)}/>}>
+                        <DropdownMenu>
+                            <DropdownItem onClick={()=>this.logout(auth.logoutToken)}>Logout</DropdownItem>
+                        </DropdownMenu>
+                    </Dropdown>
+                </Menu.Menu>
+            </Menu>
+      </React.Fragment>
+    )
+  }
+}
 
 TopDashboardNavigation.propTypes={
     auth: propTypes.shape({
@@ -47,4 +58,4 @@ function mapStateToProps(state){
     }
 }
     
-export default connect(mapStateToProps,{logout:actions.logout})(TopDashboardNavigation);
+export default connect(mapStateToProps,{logout})(TopDashboardNavigation);
