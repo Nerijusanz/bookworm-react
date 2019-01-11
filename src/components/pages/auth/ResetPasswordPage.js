@@ -11,9 +11,16 @@ import ServerError from '../../messages/ServerError';
 
 class ResetPasswordPage extends Component {
 
+    
 
     componentDidMount(){
         
+        this.resetPasswordToken();
+
+    }
+
+    resetPasswordToken = () => {
+
         this.props.resetPasswordToken(this.props.match.params.token);   // get token from url param;
 
     }
@@ -32,7 +39,7 @@ class ResetPasswordPage extends Component {
   render() {
 
     // ---------------------state variables-------------------------------
-    const token = this.props.match.params.token; // got token from url param;
+    const {token} = this.props.match.params; // got token from url param;
     const {serverErrors,loading,success,resetPasswordTokenStatus} = this.props.auth; // redux: auth reducer
     // -------------------------------------------------------------------
 
@@ -81,10 +88,11 @@ ResetPasswordPage.propTypes={
     }).isRequired,
     resetPasswordToken: propTypes.func.isRequired
 }
-
+/*
 ResetPasswordPage.contextTypes = {
     router: propTypes.object.isRequired
   }
+  */
 
 function mapStateToProps(state){
 

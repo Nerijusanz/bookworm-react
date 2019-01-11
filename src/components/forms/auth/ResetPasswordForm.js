@@ -25,8 +25,6 @@ class ResetPasswordForm extends Component {
 
     onChangeHandler = e => {
 
-        e.preventDefault();
-
         this.setState({
             data:{ ...this.state.data,[e.target.name]:e.target.value}
         });
@@ -56,7 +54,8 @@ class ResetPasswordForm extends Component {
         
         
         if(Object.keys(validationErrors).length > 0)
-            this.setState({      
+            this.setState({
+                data:{...this.state.data},      
                 validationErrors
             });
         
