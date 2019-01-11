@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import propTypes from 'prop-types';
+// import propTypes from 'prop-types';
 
 import Timezone from './Timezone';
 
@@ -18,9 +18,5 @@ class DashboardPage extends Component {
     )
   }
 }
-
-
-DashboardPage.propTypes={}
-
 
 export default connect(null,{})(DashboardPage);
