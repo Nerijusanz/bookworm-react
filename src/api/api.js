@@ -24,8 +24,7 @@ export default{
         
     },
     dashboard:{
-        page:()=>
-            axios.get("/api/dashboard"),
+
     },
     booksApi:{
         searchBook:(query)=>
