@@ -19,13 +19,11 @@ class SearchBlock extends Component {
         if(this.timer) clearTimeout(this.timer);
 
         const query = e.target.value;
-        // trigger new timer
-        this.timer = setTimeout(()=>{
-            // note: do axios call to server after 1s, when stop input typing!!!
-            this.setState({query});
-            this.props.searchBook(query)
+        this.setState({query});
 
-        },1000);
+        // trigger new timer
+        // note: do axios call to server after 1s, when stop input typing!!!
+        this.timer = setTimeout(()=>{ this.searchBook() },1000);
 
     }
 
@@ -39,6 +37,13 @@ class SearchBlock extends Component {
 
         this.props.searchBookSelected(selectedBookObj);
         
+    }
+
+    searchBook = () => {
+
+        if( this.state.query ) 
+            this.props.searchBook(this.state.query);
+
     }
 
   render() {
