@@ -58,7 +58,7 @@ class AddBook extends Component {
 
         const covers = this.state.data.covers;
 
-        if(!covers && covers.length < 1) return;
+        if(!covers || covers.length < 1) return;
 
         const bookCovers = covers.map((cover,index)=>
             <Image key={index} size="small" src={cover} />
