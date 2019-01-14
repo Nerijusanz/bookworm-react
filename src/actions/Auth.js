@@ -105,7 +105,14 @@ export const authResetPassword = (status) => ({
 
 export const setAuthorizationHeader = token => {
 
-    if(!token || token === 'undefined') return;
+    if(!token || token === 'undefined'){
+        
+        delete axios.defaults.headers.common.Authorization;
+
+        localStorage.removeItem(process.env.REACT_APP_LOCAL_STORAGE_TOKEN);
+
+        return;
+    } 
 
     axios.defaults.headers.common.Authorization = `Bearer ${token}`;
 
