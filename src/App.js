@@ -4,9 +4,9 @@ import { connect } from 'react-redux';
 import propTypes from 'prop-types';
 import Loader from 'react-loader';
 
-import {authenticationCheck} from './actions/Auth';
-import Navigation from './components/navigation/Navigation';
-// import AppRoute from './routes/AppRoute';
+import {authenticationCheck,logout} from './actions/Auth';
+import TopDashboardNavigation from './components/navigation/TopDashboardNavigation';
+
 import FlashMessage from './components/messages/flash/FlashMessage';
 
 
@@ -44,14 +44,22 @@ class App extends Component {
 
   }
 
+  logout = (logoutToken) => {
+    this.props.logout(logoutToken);
+  }
+
   render() {
 
         // ----------------state variables ------------------------
-        const {loading} = this.props.auth; // redux: auth reducer
-        // --------------------------------------------------------
+        const {isAuthenticated,auth} = this.props;  // REDUX props
+        //---------------------------------------------------------
+
+        const appTopNavigation = isAuthenticated && <TopDashboardNavigation auth={auth} logout={this.logout} />
+
+        // ---------------------------ROUTES-----------------------------------------------------
         const NotFoundRedirect = () => <Redirect to="/" />
         
-        const appRoutes = !loading &&
+        const appRoutes = !auth.loading &&
             
               <Switch>
                 <Route location={this.props.location} path="/" exact component={HomePage} />    
@@ -72,11 +80,12 @@ class App extends Component {
     
               </Switch>
 
+        // ------------------------------------------------------------------------------
 
     return (
       <div>
-        <Loader loaded={!loading}>
-        <Navigation/>
+        <Loader loaded={!auth.loading}>
+          {appTopNavigation}
           <div className="ui container">
             <FlashMessage/>
             {appRoutes}
@@ -88,41 +97,28 @@ class App extends Component {
 }
 
 App.propTypes={
+  isAuthenticated: propTypes.bool.isRequired,
+
   location: propTypes.shape({
     pathname: propTypes.string.isRequired
   }).isRequired,
+
   auth: propTypes.shape({
-
     loading: propTypes.bool.isRequired,
-
   }).isRequired,
-  authenticationCheck: propTypes.func.isRequired
+
+  authenticationCheck: propTypes.func.isRequired,
+  logout: propTypes.func.isRequired
 }
 
 
 function mapStateToProps(state){
 
   return {
-      auth: state.auth
+    isAuthenticated: !!state.auth.token,
+    auth: state.auth
   }
 }
 
 
-export default connect(mapStateToProps,{authenticationCheck})(App);
-
-
-/*
-const App = () => (
-  <div>
-    <Navigation/>
-    <div className="ui container">
-      <FlashMessage/>
-      <Route component={AppRoute} />
-    </div>
-  </div>
-);
-
-
-
-export default App;
-*/
+export default connect(mapStateToProps,{authenticationCheck,logout})(App);
