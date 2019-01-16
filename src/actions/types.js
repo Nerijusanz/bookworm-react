@@ -57,3 +57,7 @@ export const BOOK_SEARCH_SELECTED_BOOK_SAVE_STATUS_NO = 'BOOK_SEARCH_SELECTED_BO
 // ----------------------USERBOOK-------------------------------------
 export const USERBOOK_BOOKS_STATUS_YES = 'USERBOOK_BOOKS_STATUS_YES';
 export const USERBOOK_BOOKS_STATUS_NO = 'USERBOOK_BOOKS_STATUS_NO';
+
+// ----------------------LOCALE--------------------------------------
+export const LOCALE_SET_LANG_YES = 'LOCALE_SET_LANG_YES';
+export const LOCALE_SET_LANG_NO = 'LOCALE_SET_LANG_NO';

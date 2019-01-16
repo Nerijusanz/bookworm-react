@@ -4,14 +4,21 @@ import { connect } from 'react-redux';
 import propTypes from 'prop-types';
 import Loader from 'react-loader';
 
+import {IntlProvider } from 'react-intl';
+
 import {authenticationCheck,logout} from './actions/Auth';
+import { setLocale } from './actions/Locale';
 import TopDashboardNavigation from './components/navigation/TopDashboardNavigation';
 
+// ---------------internationalize lang messages-----------------
+import langMessages from './lang/langMessages';
+// --------------------------------------------------------------
 import FlashMessage from './components/messages/flash/FlashMessage';
 
-
+// --------------Auth Routes-------------------------------------
 import GuestRoute from './routes/GuestRoute';
 import AuthRoute from './routes/AuthRoute';
+// ---------------------------------------------------------
 
 // -----------------Pages-----------------------------------
 import HomePage from './components/pages/HomePage';
@@ -34,13 +41,30 @@ import UserBooks from './components/pages/dashboard/userbooks/UserBooks';
 
 
 
-
 class App extends Component {
 
   componentDidMount(){
 
-        // note: if on server-side got user authenticated succes, than redux add isAuthenticated!!!
-        this.props.authenticationCheck();
+    this.initApp();
+
+  }
+
+  setLocale = (lang) => {
+    
+    this.props.setLocale(lang);
+
+  }
+
+  initApp = () => {
+
+
+
+    // note: if on server-side got user authenticated succes, than redux add isAuthenticated!!!
+    this.props.authenticationCheck();
+
+    // -------------set locale ---------------------------------
+    if(localStorage.getItem(process.env.REACT_APP_LOCAL_STORAGE_LOCALE_LANG))
+      this.props.setLocale(localStorage.getItem(process.env.REACT_APP_LOCAL_STORAGE_LOCALE_LANG));
 
   }
 
@@ -48,13 +72,15 @@ class App extends Component {
     this.props.logout(logoutToken);
   }
 
+
+
   render() {
 
         // ----------------state variables ------------------------
-        const {isAuthenticated,auth} = this.props;  // REDUX props
+        const {isAuthenticated,auth,locale} = this.props;  // REDUX props
         //---------------------------------------------------------
 
-        const appTopNavigation = isAuthenticated && <TopDashboardNavigation auth={auth} logout={this.logout} />
+        const appTopNavigation = isAuthenticated && <TopDashboardNavigation auth={auth} logout={this.logout} setLocale={this.setLocale} />
 
         // ---------------------------ROUTES-----------------------------------------------------
         const NotFoundRedirect = () => <Redirect to="/" />
@@ -82,8 +108,9 @@ class App extends Component {
 
         // ------------------------------------------------------------------------------
 
-    return (
+    return (    
       <div>
+        <IntlProvider locale={locale.lang} messages={langMessages[locale.lang]}>
         <Loader loaded={!auth.loading}>
           {appTopNavigation}
           <div className="ui container">
@@ -91,7 +118,8 @@ class App extends Component {
             {appRoutes}
           </div>
         </Loader>
-      </div>
+        </IntlProvider>
+      </div>     
     )
   }
 }
@@ -107,8 +135,13 @@ App.propTypes={
     loading: propTypes.bool.isRequired,
   }).isRequired,
 
+  locale: propTypes.shape({
+    lang: propTypes.string.isRequired,
+  }),
+
   authenticationCheck: propTypes.func.isRequired,
-  logout: propTypes.func.isRequired
+  logout: propTypes.func.isRequired,
+  setLocale: propTypes.func.isRequired,
 }
 
 
@@ -116,9 +149,10 @@ function mapStateToProps(state){
 
   return {
     isAuthenticated: !!state.auth.token,
-    auth: state.auth
+    auth: state.auth,
+    locale: state.locale
   }
 }
 
 
-export default connect(mapStateToProps,{authenticationCheck,logout})(App);
+export default connect(mapStateToProps,{authenticationCheck,setLocale,logout})(App);
