@@ -6,7 +6,7 @@ import Loader from 'react-loader';
 
 import {IntlProvider } from 'react-intl';
 
-import {authenticationCheck,logout} from './actions/Auth';
+import {setAuthorizationHeader,authenticationCheck,logout} from './actions/Auth';
 import { setLocale } from './actions/Locale';
 import TopDashboardNavigation from './components/navigation/TopDashboardNavigation';
 
@@ -57,7 +57,8 @@ class App extends Component {
 
   initApp = () => {
 
-
+    if(localStorage.getItem(process.env.REACT_APP_LOCAL_STORAGE_TOKEN))
+      setAuthorizationHeader(localStorage.getItem(process.env.REACT_APP_LOCAL_STORAGE_TOKEN));
 
     // note: if on server-side got user authenticated succes, than redux add isAuthenticated!!!
     this.props.authenticationCheck();

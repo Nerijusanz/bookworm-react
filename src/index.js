@@ -12,17 +12,9 @@ import store from './store';    // REDUX STORE;
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 
-import {setAuthorizationHeader} from './actions/Auth';
-
 addLocaleData(lt);
 addLocaleData(en);
 addLocaleData(ru);
-
-// ---------------set auth token-------------------------------
-
-if(localStorage.getItem(process.env.REACT_APP_LOCAL_STORAGE_TOKEN))
-    setAuthorizationHeader(localStorage.getItem(process.env.REACT_APP_LOCAL_STORAGE_TOKEN));
-
 
 ReactDOM.render(
     <Router>      
