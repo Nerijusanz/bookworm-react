@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import propTypes from 'prop-types';
 import {connect} from 'react-redux';
 
@@ -6,41 +6,22 @@ import ForgotPasswordForm from '../../forms/auth/ForgotPasswordForm';
 import InlineMessage from '../../messages/InlineMessage';
 
 
-
-class ForgotPasswordPage extends Component {
-
-  messageForgotPasswordSendInfo = () => {
-    
-    const  msg  = `Password verification has been sent to your email. Check your email`;
-    return <InlineMessage msgType="info" headerText="Forgot password" contentText={msg} />
-
-  }
-  
-
-  render() {
-
-      // ----------------state variables ------------------------
-      const {success} = this.props.auth; // redux: auth reducer
-      // --------------------------------------------------------
-      
-      const content = success ? this.messageForgotPasswordSendInfo() : <ForgotPasswordForm />
-
-    return (
-      <div>
-        <h1>Forgot password page</h1>
-
-        {content}
+const ForgotPasswordPage = ({auth}) => (
+  <div>
+      <h1>Forgot password page</h1>
+      {
+        auth.success ? 
+          <InlineMessage msgType="info" headerText="Forgot password" contentText="Password verification has been sent to your email. Check your email" />
+          :
+          <ForgotPasswordForm />
+      }
           
-      </div>
-    )
-  }
-}
+  </div>
+);
 
 ForgotPasswordPage.propTypes = {
   auth: propTypes.shape({
-
       success: propTypes.bool.isRequired,
-
   }).isRequired,
 
 }
