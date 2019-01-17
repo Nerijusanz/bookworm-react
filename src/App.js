@@ -1,46 +1,28 @@
 import React, { Component } from 'react';
-import {Route,Switch,Redirect} from 'react-router-dom';
 import { connect } from 'react-redux';
 import propTypes from 'prop-types';
-import Loader from 'react-loader';
 import 'semantic-ui-css/semantic.min.css';
-
 import { IntlProvider } from 'react-intl';
+import Loader from 'react-loader';
 
+// -------------------redux thunk actions--------------------------------------
 import {setAuthorizationHeader,authenticationCheck,logout} from './actions/Auth';
 import { setLocale } from './actions/Locale';
-import TopDashboardNavigation from './components/navigation/TopDashboardNavigation';
+// ----------------------------------------------------------------------------
 
-// ---------------internationalize lang messages-----------------
+// ---------------internationalize locale lang messages-----------------
 import { initLocales } from './config/locale/locales';
 import langMessages from './config/locale/langMessages';
-// --------------------------------------------------------------
+// ---------------------------------------------------------------------
+
+// --------------APP ROUTE-----------------------------------------
+import AppRoute from './routes/AppRoute';
+// ----------------------------------------------------------------
+
+// -------------------------Components----------------------------------------------
+import TopDashboardNavigation from './components/navigation/TopDashboardNavigation';
 import FlashMessage from './components/messages/flash/FlashMessage';
-
-// --------------Auth Routes-------------------------------------
-import GuestRoute from './routes/GuestRoute';
-import AuthRoute from './routes/AuthRoute';
-// ---------------------------------------------------------
-
-// -----------------Pages-----------------------------------
-import HomePage from './components/pages/HomePage';
-
-import LoginPage from './components/pages/auth/LoginPage';
-import SignupPage from './components/pages/auth/SignupPage';
-import SignupConfirmationPage from './components/pages/auth/SignupConfirmationPage';
-import ForgotPasswordPage from './components/pages/auth/ForgotPasswordPage';
-import ResetPasswordPage from './components/pages/auth/ResetPasswordPage';
-
-
-import DashboardPage from './components/pages/dashboard/DashboardPage';
-
-import Books from './components/pages/dashboard/books/Books';
-import AddBook from './components/pages/dashboard/books/AddBook';
-
-import UserBooks from './components/pages/dashboard/userbooks/UserBooks';
-
-
-// -----------------end Pages----------------------------------------
+// ----------------------------------------------------------------------------------
 
 class App extends Component {
 
@@ -51,80 +33,59 @@ class App extends Component {
   }
 
   setLocale = (lang) => {
-    
+    // TopDashboardNavigation clicked lang link
     this.props.setLocale(lang);
 
   }
 
   initApp = () => {
     
-    initLocales();  // config locale/locales;
+    initLocales();  // ./config/locale/locales;
 
     // -------------set locale ---------------------------------
-    if(localStorage.getItem(process.env.REACT_APP_LOCAL_STORAGE_LOCALE_LANG)){
-      this.props.setLocale(localStorage.getItem(process.env.REACT_APP_LOCAL_STORAGE_LOCALE_LANG));
-    }
+    if( localStorage.getItem(process.env.REACT_APP_LOCAL_STORAGE_LOCALE_LANG) )
+      this.props.setLocale( localStorage.getItem(process.env.REACT_APP_LOCAL_STORAGE_LOCALE_LANG) );
     
-    if(localStorage.getItem(process.env.REACT_APP_LOCAL_STORAGE_TOKEN))
-      setAuthorizationHeader(localStorage.getItem(process.env.REACT_APP_LOCAL_STORAGE_TOKEN));
+    
+    if( localStorage.getItem(process.env.REACT_APP_LOCAL_STORAGE_TOKEN) )
+      setAuthorizationHeader( localStorage.getItem(process.env.REACT_APP_LOCAL_STORAGE_TOKEN) );
 
-    // note: if on server-side got user authenticated succes, than redux add isAuthenticated!!!
+    // note: Call ajax to server-side; got user authenticated: succes or false;
+    // if server-side return auth token, that`s mean user is authenticated
     this.props.authenticationCheck();
 
   }
 
   logout = (logoutToken) => {
+
     this.props.logout(logoutToken);
+
   }
-
-
 
   render() {
 
-        // ----------------state variables ------------------------
-        const {isAuthenticated,auth,locale} = this.props;  // REDUX props
-        //---------------------------------------------------------
+    // ----------------state variables ------------------------
+    const {isAuthenticated,auth,locale} = this.props;  // REDUX props
+    //---------------------------------------------------------
 
-        const appTopNavigation = isAuthenticated && <TopDashboardNavigation auth={auth} logout={this.logout} setLocale={this.setLocale} />
+    const appTopDashboardNavigation = isAuthenticated && <TopDashboardNavigation auth={auth} logout={this.logout} setLocale={this.setLocale} />
 
-        // ---------------------------ROUTES-----------------------------------------------------
-        const NotFoundRedirect = () => <Redirect to="/" />
-        
-        const appRoutes = !auth.loading &&
-            
-              <Switch>
-                <Route location={this.props.location} path="/" exact component={HomePage} />    
-                
-                <GuestRoute location={this.props.location} path="/signup" exact component={SignupPage} />
-                <GuestRoute location={this.props.location} path="/signup_confirmation_token/:token" exact component={SignupConfirmationPage} /> 
-                <GuestRoute location={this.props.location} path="/forgot_password" exact component={ForgotPasswordPage} />
-                <GuestRoute location={this.props.location} path="/reset_password_token/:token" exact component={ResetPasswordPage} />
-                <GuestRoute location={this.props.location} path="/login" exact component={LoginPage} />
-    
-                <AuthRoute location={this.props.location} path="/dashboard_books_add" exact component={AddBook} />
-                <AuthRoute location={this.props.location} path="/dashboard_books" exact component={Books} />
-                <AuthRoute location={this.props.location} path="/dashboard" exact component={DashboardPage} />
-    
-                <AuthRoute location={this.props.location} path="/dashboard_userbooks" exact component={UserBooks} />
-                
-                <Route component={NotFoundRedirect} />
-    
-              </Switch>
-
-        // ------------------------------------------------------------------------------
+    const APPRoute = !auth.loading && <AppRoute location={this.props.location} isAuthenticated={isAuthenticated} />
 
     return (    
-      <div>
+      <React.Fragment>
+
         <IntlProvider locale={locale.lang} messages={langMessages[locale.lang]}>
-        <Loader loaded={!auth.loading}>
-          {appTopNavigation}
-          <div className="ui container">
-            <FlashMessage/>
-            {appRoutes}
-          </div>
-        </Loader>
+          <Loader loaded={!auth.loading}>
+            {appTopDashboardNavigation}
+            <div className="ui container">
+              <FlashMessage/>
+              {APPRoute}
+            </div>
+          </Loader>
         </IntlProvider>
-      </div>     
+
+      </React.Fragment>     
     )
   }
 }
@@ -142,7 +103,7 @@ App.propTypes={
 
   locale: propTypes.shape({
     lang: propTypes.string.isRequired,
-  }),
+  }).isRequired,
 
   authenticationCheck: propTypes.func.isRequired,
   logout: propTypes.func.isRequired,
@@ -153,11 +114,10 @@ App.propTypes={
 function mapStateToProps(state){
 
   return {
-    isAuthenticated: !!state.auth.token,
+    isAuthenticated: !!state.auth.token,  // check auth.token exists status; return true or false;
     auth: state.auth,
     locale: state.locale
   }
 }
-
 
 export default connect(mapStateToProps,{authenticationCheck,setLocale,logout})(App);
