@@ -3,15 +3,17 @@ import {Route,Switch,Redirect} from 'react-router-dom';
 import { connect } from 'react-redux';
 import propTypes from 'prop-types';
 import Loader from 'react-loader';
+import 'semantic-ui-css/semantic.min.css';
 
-import {IntlProvider } from 'react-intl';
+import { IntlProvider } from 'react-intl';
 
 import {setAuthorizationHeader,authenticationCheck,logout} from './actions/Auth';
 import { setLocale } from './actions/Locale';
 import TopDashboardNavigation from './components/navigation/TopDashboardNavigation';
 
 // ---------------internationalize lang messages-----------------
-import langMessages from './lang/langMessages';
+import { initLocales } from './config/locale/locales';
+import langMessages from './config/locale/langMessages';
 // --------------------------------------------------------------
 import FlashMessage from './components/messages/flash/FlashMessage';
 
@@ -37,9 +39,8 @@ import AddBook from './components/pages/dashboard/books/AddBook';
 
 import UserBooks from './components/pages/dashboard/userbooks/UserBooks';
 
+
 // -----------------end Pages----------------------------------------
-
-
 
 class App extends Component {
 
@@ -56,16 +57,19 @@ class App extends Component {
   }
 
   initApp = () => {
+    
+    initLocales();  // config locale/locales;
 
+    // -------------set locale ---------------------------------
+    if(localStorage.getItem(process.env.REACT_APP_LOCAL_STORAGE_LOCALE_LANG)){
+      this.props.setLocale(localStorage.getItem(process.env.REACT_APP_LOCAL_STORAGE_LOCALE_LANG));
+    }
+    
     if(localStorage.getItem(process.env.REACT_APP_LOCAL_STORAGE_TOKEN))
       setAuthorizationHeader(localStorage.getItem(process.env.REACT_APP_LOCAL_STORAGE_TOKEN));
 
     // note: if on server-side got user authenticated succes, than redux add isAuthenticated!!!
     this.props.authenticationCheck();
-
-    // -------------set locale ---------------------------------
-    if(localStorage.getItem(process.env.REACT_APP_LOCAL_STORAGE_LOCALE_LANG))
-      this.props.setLocale(localStorage.getItem(process.env.REACT_APP_LOCAL_STORAGE_LOCALE_LANG));
 
   }
 
