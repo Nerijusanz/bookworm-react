@@ -68,7 +68,7 @@ class App extends Component {
     const {isAuthenticated,auth,locale} = this.props;  // REDUX props
     //---------------------------------------------------------
 
-    const appTopDashboardNavigation = isAuthenticated && <TopDashboardNavigation auth={auth} logout={this.logout} setLocale={this.setLocale} />
+    const appTopDashboardNavigation = <TopDashboardNavigation isAuthenticated={isAuthenticated} auth={auth} logout={this.logout} setLocale={this.setLocale} />
 
     const APPRoute = !auth.loading && <AppRoute location={this.props.location} isAuthenticated={isAuthenticated} />
 

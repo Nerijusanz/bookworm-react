@@ -5,12 +5,14 @@ import {Link} from 'react-router-dom';
 import {Menu, Dropdown,DropdownItem,Image, DropdownMenu, MenuItem, Button} from 'semantic-ui-react';
 import {FormattedMessage} from 'react-intl';
 
-const TopDashboardNavigation = ({auth,logout,setLocale}) => (
-    // <TopDashboardNavigation auth={auth} logout={this.logout}
-    <Menu secondary pointing>
+const TopDashboardNavigation = ({ isAuthenticated,auth,logout,setLocale }) => (
+
+    // <TopDashboardNavigation isAuthenticated={isAuthenticated} auth={auth} logout={this.logout} />
+    
+    isAuthenticated ? (<Menu secondary pointing>
 
         <Menu.Item as={Link} to="/dashboard">
-            <FormattedMessage id="nav_item_dashboard" />
+            <FormattedMessage id="nav_item_brand_dashboard" />
         </Menu.Item>
 
         <Menu.Menu position="right">
@@ -29,9 +31,32 @@ const TopDashboardNavigation = ({auth,logout,setLocale}) => (
             </Dropdown>
         </Menu.Menu>
     </Menu>
+
+    ) : (
+
+    <Menu secondary pointing>
+
+        <Menu.Item as={Link} to="/">
+            <FormattedMessage id="nav_item_brand_main" />
+        </Menu.Item>
+
+        <Menu.Menu position="right">
+            <MenuItem><Link to="signup"><FormattedMessage id="nav_item_signup" /></Link></MenuItem>
+            <MenuItem><Link to="login"><FormattedMessage id="nav_item_login" /></Link></MenuItem>
+
+            <MenuItem>
+                <Button basic color='grey' onClick={()=>setLocale('lt')}>LT</Button>
+                <Button basic color='grey' onClick={()=>setLocale('en')}>EN</Button>
+                <Button basic color='grey' onClick={()=>setLocale('ru')}>RU</Button>
+            </MenuItem>
+
+        </Menu.Menu>
+    </Menu>)
+    
 );
 
 TopDashboardNavigation.propTypes={
+    isAuthenticated: propTypes.bool.isRequired,
     auth: propTypes.shape({
         user: propTypes.shape({
             email: propTypes.string.isRequired,

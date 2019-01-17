@@ -1,23 +1,29 @@
 import React from 'react';
 import propTypes from 'prop-types';
 import {connect} from 'react-redux';
+import {FormattedMessage } from 'react-intl';
+
+
 
 import ForgotPasswordForm from '../../forms/auth/ForgotPasswordForm';
 import InlineMessage from '../../messages/InlineMessage';
 
 
+
 const ForgotPasswordPage = ({auth}) => (
-  <div>
-      <h1>Forgot password page</h1>
+
+  <React.Fragment>
+      <h1><FormattedMessage id="page_forgotpassword_page_title" /></h1>
       {
         auth.success ? 
           <InlineMessage msgType="info" headerText="Forgot password" contentText="Password verification has been sent to your email. Check your email" />
           :
           <ForgotPasswordForm />
       }
-          
-  </div>
+
+  </React.Fragment>
 );
+
 
 ForgotPasswordPage.propTypes = {
   auth: propTypes.shape({
@@ -30,7 +36,7 @@ ForgotPasswordPage.propTypes = {
 function mapStateToProps(state){
 
   return {
-      auth: state.auth
+      auth: state.auth,
   }
 }
 

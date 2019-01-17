@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
 import propTypes from 'prop-types';
 import {connect} from 'react-redux';
-
+import {FormattedMessage} from 'react-intl';
 import Validator from 'validator';
+
 import { Form,Button } from 'semantic-ui-react';
+
 
 import {forgotPassword} from '../../../actions/Auth';
 import ServerError from '../../messages/ServerError';
 import InlineError from '../../messages/InlineError';
+
 
 
 import {addFlashMessage} from '../../../actions/FlashMessage';
@@ -79,18 +82,18 @@ class ForgotPasswordForm extends Component {
                 {validationErrors.email && <InlineError text={validationErrors.email} />}
                 {serverErrors.email && <InlineError text={serverErrors.email} />}
                 <Form.Field error={!!validationErrors.email || !!serverErrors.email}>
-                    <label htmlFor="email">Email</label>
+                    <label htmlFor="email"><FormattedMessage id="page_forgotpassword_form_input_label_email" /></label>
                     <input 
                         type="text" 
                         id="email" 
                         name="email" 
-                        placeholder="example@example.com" 
+                        placeholder=''
                         value={data.email}
                         onChange={this.onChangeHandler}
                     />
                 </Form.Field>
 
-                <Button primary disabled={loading}>reset password</Button>
+                <Button primary disabled={loading}><FormattedMessage id="page_forgotpassword_form_button_reset_password" /></Button>
 
             </Form>
 
@@ -114,14 +117,20 @@ ForgotPasswordForm.propTypes={
             email:  propTypes.string
         }).isRequired
     }).isRequired,
+
+    locale: propTypes.shape({
+        lang: propTypes.string.isRequired,
+      }).isRequired,
+
     forgotPassword: propTypes.func.isRequired,
-    addFlashMessage: propTypes.func.isRequired
+    
 }
 
 function  mapStateToProps(state){
 
     return {
-        auth: state.auth
+        auth: state.auth,
+        locale: state.locale
     }
 }
 
