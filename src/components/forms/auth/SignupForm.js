@@ -1,14 +1,11 @@
 import React, { Component } from 'react';
 import propTypes from 'prop-types';
-import {connect} from 'react-redux';
 import Validator from 'validator';
 
 import { Form,Button } from 'semantic-ui-react';
 
-import {signupEmailExists,signup} from '../../../actions/Auth';
-
 import InlineError from '../../messages/InlineError';
-import ServerError from '../../messages/ServerError';
+
 
 
 class SignupForm extends Component {
@@ -25,22 +22,25 @@ class SignupForm extends Component {
     onChangeHanlder = (e) => {
   
         this.setState({
-            data:{...this.state.data,[e.target.name]:e.target.value}
+            data:{
+                ...this.state.data,
+                [e.target.name]:e.target.value
+            }
         });
 
     }
 
     onBlurHandler = (e) =>{
 
+        /*
+        TODO: not working yet
         // ----------------CUSTOM VALIDATION EMAIL INPUT ON BLUR EVENT ---------------
         const validationErrors={};
 
-        this.setState({validationErrors});
-
         if(!Validator.isEmail(this.state.data.email)) validationErrors.email="invalid email";
 
-        // check if got validation error
         if(Object.keys(validationErrors).length > 0){
+
             this.setState({
                 data:{
                     ...this.state.data,
@@ -48,12 +48,12 @@ class SignupForm extends Component {
                 },
                 validationErrors
             });
-            
+
             return;
         }
-
-        this.props.signupEmailExists(this.state.data.email);
         
+        this.props.signupEmailExists(this.state.data.email);
+        */
     }
     
 
@@ -61,9 +61,7 @@ class SignupForm extends Component {
 
         e.preventDefault();
         
-        if(!this.dataValidation(this.state.data)) return; // stop signup process;
-        
-        // validation goes OK;
+        if(!this.dataValidation(this.state.data)) return;
 
         this.props.signup(this.state.data);
 
@@ -73,8 +71,6 @@ class SignupForm extends Component {
     dataValidation = (data) => {
 
         const validationErrors = {};
-
-        this.setState({validationErrors});
         
         if(!Validator.isEmail(data.email)) validationErrors.email = "invalid email";
        
@@ -83,12 +79,9 @@ class SignupForm extends Component {
 
         if(!Validator.equals(data.password,data.passwordConf)) validationErrors.passwordConf = 'pasword isn`t match';
         
-
-        // check if got validation error
-        if(Object.keys(validationErrors).length > 0)
-            this.setState({
-                validationErrors
-            });   
+        this.setState({
+            validationErrors
+        });   
 
         // return validation error status;
         return (Object.keys(validationErrors).length === 0) // true or false
@@ -100,95 +93,75 @@ class SignupForm extends Component {
 
     // ---------------------state variables-------------------------------
     const {validationErrors,data} = this.state;
-    const {serverErrors,loading} = this.props.auth; // redux: auth reducer
+    const {auth} = this.props; // redux: props
     // -------------------------------------------------------------------
 
-    
-    
-    const serverErrorContent = serverErrors.global && <ServerError errors={serverErrors.global} />
-
-    const content = 
-        
-        <Form onSubmit={this.onSubmitHandler} loading={loading} >
-
-            {validationErrors.email && <InlineError text={validationErrors.email} />}
-            {serverErrors.email && <InlineError text={serverErrors.email} />} 
-            <Form.Field error={!!validationErrors.email || !!serverErrors.email}>
-                <label htmlFor="email">Email</label>
-                <input 
-                    type="email"
-                    id="email"
-                    name="email"
-                    placeholder="email" 
-                    value={data.email}
-                    onChange={this.onChangeHanlder}
-                    onBlur={this.onBlurHandler}
-                />
-            </Form.Field>
-
-            {validationErrors.password && <InlineError text={validationErrors.password} />}
-            <Form.Field error={!!validationErrors.password}>
-                <label htmlFor="password">Password</label>
-                <input 
-                    type="password"
-                    id="password"
-                    name="password"
-                    value={data.password}
-                    onChange={this.onChangeHanlder}
-                />
-            </Form.Field>
-
-            {validationErrors.passwordConf && <InlineError text={validationErrors.passwordConf} />}
-            <Form.Field error={!!validationErrors.passwordConf}>
-                <label htmlFor="passwordConf">Password confirm</label>
-                <input 
-                    type="password"
-                    id="passwordConf"
-                    name="passwordConf"
-                    value={data.passwordConf}
-                    onChange={this.onChangeHanlder}
-                />
-            </Form.Field>
-
-            <Button primary disabled={loading}>sign up</Button>
-
-        </Form>
-
-
     return (
-      <div>
 
-        {serverErrorContent}
+        <div className="signup-form">
+        
+            <Form onSubmit={this.onSubmitHandler} loading={auth.loading} >
 
-        {content}
+                {validationErrors.email && <InlineError error={validationErrors.email} />}
+                <Form.Field error={!!validationErrors.email || !!auth.serverErrors.signup_email}>
+                    <label htmlFor="email">Email</label>
+                    <input 
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="email@email.com" 
+                        value={data.email}
+                        onBlur={this.onBlurHandler}
+                        onChange={this.onChangeHanlder}
+                        
+                    />
+                </Form.Field>
 
-      </div>
+                {validationErrors.password && <InlineError error={validationErrors.password} />}
+                <Form.Field error={!!validationErrors.password}>
+                    <label htmlFor="password">Password</label>
+                    <input 
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder=""
+                        value={data.password}
+                        onChange={this.onChangeHanlder}
+                    />
+                </Form.Field>
+
+                {validationErrors.passwordConf && <InlineError error={validationErrors.passwordConf} />}
+                <Form.Field error={!!validationErrors.passwordConf}>
+                    <label htmlFor="passwordConf">Password confirm</label>
+                    <input 
+                        type="password"
+                        id="passwordConf"
+                        name="passwordConf"
+                        placeholder=""
+                        value={data.passwordConf}
+                        onChange={this.onChangeHanlder}
+                    />
+                </Form.Field>
+
+                <Button primary disabled={auth.loading}>sign up</Button>
+
+            </Form>
+
+        </div>
     )
   }
 
 }
 
 SignupForm.propTypes = {
+
     auth: propTypes.shape({
-        // signupIsEmail: propTypes.bool.isRequired,
         loading: propTypes.bool.isRequired,
-        serverErrors: propTypes.shape({
-            global: propTypes.arr,
-            email:  propTypes.string
-        }).isRequired
     }).isRequired,
+
     signupEmailExists: propTypes.func.isRequired,
     signup: propTypes.func.isRequired
 
 }
 
-
-function mapStateToProps(state){
-
-    return {
-        auth: state.auth
-    }
-}
-
-
-export default connect(mapStateToProps,{signupEmailExists,signup})(SignupForm);
+export default (SignupForm);
