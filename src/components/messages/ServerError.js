@@ -1,38 +1,34 @@
-import React, { Component } from 'react';
+import React from 'react';
 import propTypes from 'prop-types';
 import { Message } from 'semantic-ui-react';
 import ServerErrorItem from './ServerErrorItem';
 
 
+const errorsItems = (itemsArr) => {
 
-
- class ServerError extends Component {
-
-    render(){
-
-        // usage example: <ServerError errors={serverErrors.global} />
-
-        const errorsItems = this.props.errors.map((error,index) => 
-            <ServerErrorItem key={index} error={error} />
-        );
-
-        const errorsList = <ul>{errorsItems}</ul>;
-        
-        return (
-            <div>
-                <Message negative>
-                    <Message.Header>server errors</Message.Header>
-                        {errorsList}
-                </Message>
-            </div>
-        );
-    }
-
-
+    const items = itemsArr.map((item,index) => <ServerErrorItem key={index} item={item} />)
+     
+    return items;
 }
 
+
+const ServerError = ({errors}) => (
+
+    !errors.global ? null : (
+        <div className="sever-errors">
+            <Message negative>
+                <ul>
+                    {errorsItems(errors.global)}
+                </ul>
+            </Message>
+        </div>
+    )
+);
+
 ServerError.propTypes = {
-    errors: propTypes.array.isRequired  // <ServerError errors={errors.global} />
+    errors: propTypes.shape({
+        global: propTypes.arr
+    }).isRequired
 }
 
 export default ServerError;
