@@ -1,18 +1,12 @@
 import React, { Component } from 'react';
 import propTypes from 'prop-types';
-import {connect} from 'react-redux';
 import {Link} from 'react-router-dom';
 
+import {FormattedMessage} from 'react-intl';
 import Validator from 'validator';
+import { Form,Button } from 'semantic-ui-react';
 
-import { Form,Button} from 'semantic-ui-react';
-
-import {login} from '../../../actions/Auth';
-
-import ServerError from '../../messages/ServerError';
 import InlineError from '../../messages/InlineError';
-
-
 
 class LoginForm extends Component {
 
@@ -21,13 +15,10 @@ class LoginForm extends Component {
             email:'',
             password:''
         },
-        
         validationErrors:{}
     }
 
     onChangeHandler = (e) => {
-
-        e.preventDefault();
 
         this.setState({
             data:{
@@ -43,10 +34,8 @@ class LoginForm extends Component {
 
         e.preventDefault();
         
-        if(!this.dataValidation(this.state.data)) return; // if validation got error stop login process
-        
-        // validation OK;
-        
+        if(!this.dataValidation(this.state.data)) return;
+
         this.props.login(this.state.data);
 
     }
@@ -56,17 +45,10 @@ class LoginForm extends Component {
 
         const validationErrors={};
 
-        this.setState({validationErrors});  // set validation errors state emty obj;
-
         if(!Validator.isEmail(data.email)) validationErrors.email = 'invalid email';
         if(!data.password) validationErrors.password = 'password is required';
 
-        // make check if validation errors have any error 
-        if(Object.keys(validationErrors).length > 0)
-            this.setState({
-                validationErrors
-            });
-        
+        this.setState({validationErrors});
     
         // return validation error status;
         return (Object.keys(validationErrors).length === 0); // true or false;
@@ -77,79 +59,60 @@ class LoginForm extends Component {
   render() {
     // ---------------------state variables-------------------------------
     const {validationErrors,data} = this.state;
-    const {serverErrors,loading} = this.props.auth; // redux: auth reducer
+    const {auth} = this.props; // redux props;
     // -------------------------------------------------------------------
-
-    const serverErrorContent = serverErrors.global && <ServerError errors={serverErrors.global} />
-
-    const content =
-        <Form onSubmit={this.onSubmitHandler} loading={loading}>
-
-            {validationErrors.email && <InlineError text={validationErrors.email} />}
-            <Form.Field error={!!validationErrors.email}>
-                <label htmlFor="email">Email</label>
-                <input 
-                    type="email" 
-                    id="email" 
-                    name="email" 
-                    placeholder="example@example.com" 
-                    value={data.email}
-                    onChange={this.onChangeHandler}
-                />
-            </Form.Field>
-
-            {validationErrors.password && <InlineError text={validationErrors.password} />}
-            <Form.Field error={!!validationErrors.password}>
-                <label htmlFor="password">Password</label>
-                <input 
-                    type="password" 
-                    id="password" 
-                    name="password" 
-                    value={data.password}
-                    onChange={this.onChangeHandler}
-                />
-            </Form.Field>
-
-            <Button primary disabled={loading}>login</Button>
-            <div>
-                <p><Link to="/forgot_password">forgot password</Link></p>
-                <p><Link to="/signup">sign up</Link></p>
-            </div>
-
-
-        </Form>
 
     return (
 
-        <div>
+        <div className="login-form">
 
-            {serverErrorContent}
+            <Form onSubmit={this.onSubmitHandler} loading={auth.loading}>
 
-            {content}
+                <Form.Field error={!!validationErrors.email}>
+                    { validationErrors.email && <InlineError error={validationErrors.email} /> }
+                    <label htmlFor="email"><FormattedMessage id="page_login_form_input_email_label" /></label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        placeholder="email@email.com" 
+                        value={data.email}
+                        onChange={this.onChangeHandler}
+                    />
+                </Form.Field>
 
+                <Form.Field error={!!validationErrors.password}>
+                    { validationErrors.password && <InlineError error={validationErrors.password} /> }
+                    <label htmlFor="password"><FormattedMessage id="page_login_form_input_password_label" /></label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password"
+                        placeholder=""
+                        value={data.password}
+                        onChange={this.onChangeHandler}
+                    />
+                </Form.Field>
+
+                <Button primary disabled={auth.loading}><FormattedMessage id="page_login_form_button_login" /></Button>
+
+                <div className="login-form-links">
+                    <p><Link to="/forgot_password"><FormattedMessage id="page_login_form_link_forgot_password" /></Link></p>
+                    <p><Link to="/signup"><FormattedMessage id="page_login_form_link_signup" /></Link></p>
+                </div>
+
+            </Form>
         </div>
     )
   }
 }
 
 LoginForm.propTypes = {
-
-    login: propTypes.func.isRequired,
     auth: propTypes.shape({
         loading: propTypes.bool.isRequired,
-        serverErrors: propTypes.shape({
-            global: propTypes.arr
-        }).isRequired
-    }).isRequired
+    }).isRequired,
 
+    login: propTypes.func.isRequired,
 }
 
-function  mapStateToProps(state){
-
-    return {
-        auth: state.auth
-    }
-}
-
-
-export default connect(mapStateToProps,{login})(LoginForm);
+export default (LoginForm);
