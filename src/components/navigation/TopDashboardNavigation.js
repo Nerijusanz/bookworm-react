@@ -59,7 +59,7 @@ TopDashboardNavigation.propTypes={
     isAuthenticated: propTypes.bool.isRequired,
     auth: propTypes.shape({
         user: propTypes.shape({
-            email: propTypes.string.isRequired,
+            email: propTypes.string
         }).isRequired,
         logoutToken: propTypes.string.isRequired,
     }).isRequired,
