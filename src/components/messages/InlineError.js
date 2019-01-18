@@ -3,14 +3,13 @@ import propTypes from 'prop-types';
 
 const InlineError = ({error}) => (
 
-    !error ? null : ( 
-        <div className="inline-error" style={{color:"#ae5856"}} >
-            {error}
-        </div>)
+    <div className="inline-error" style={{color:"#ae5856"}} >
+        {error}
+    </div>
 );
 
 InlineError.propTypes = {
-    error:propTypes.string.isRequired
+    error: propTypes.string.isRequired
 }
 
 
