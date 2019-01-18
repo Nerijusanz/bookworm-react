@@ -4,9 +4,9 @@ import { Message } from 'semantic-ui-react';
 import ServerErrorItem from './ServerErrorItem';
 
 
-const errorsItems = (itemsArr) => {
+const errorsItems = (errors) => {
 
-    const items = itemsArr.map((item,index) => <ServerErrorItem key={index} item={item} />)
+    const items = errors.map((item,index) => <ServerErrorItem key={index} item={item} />)
      
     return items;
 }
@@ -14,21 +14,18 @@ const errorsItems = (itemsArr) => {
 
 const ServerError = ({errors}) => (
 
-    !errors.global ? null : (
-        <div className="sever-errors">
-            <Message negative>
-                <ul>
-                    {errorsItems(errors.global)}
-                </ul>
-            </Message>
-        </div>
-    )
+    <div className="sever-errors">
+        <Message negative>
+            <ul>
+                {errorsItems(errors)}
+            </ul>
+        </Message>
+    </div>
+    
 );
 
 ServerError.propTypes = {
-    errors: propTypes.shape({
-        global: propTypes.arr
-    }).isRequired
+    errors: propTypes.array.isRequired,
 }
 
 export default ServerError;
