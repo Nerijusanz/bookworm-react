@@ -14,9 +14,11 @@ export default {
         page_forgotpassword_form_input_label_email:'Email',
         page_forgotpassword_form_input_placeholder_email:'email@email.com',
         page_forgotpassword_form_button_reset_password:'Reset password',
+
+        page_login_page_title:'Login',
     },
     ru:{
-        nav_item_dashboard:'приборная доска',
+        nav_item_brand_dashboard:'приборная доска',
         nav_item_brand_main:'Главный',
         nav_item_signup:'регистрационная',
         nav_item_login:'войти',
@@ -30,9 +32,11 @@ export default {
         page_forgotpassword_form_input_label_email:'Электронная почта',
         page_forgotpassword_form_input_placeholder_email:'почта@почта.com',
         page_forgotpassword_form_button_reset_password:'Сброс пароля',
+
+        page_login_page_title:'Авторизоваться',
     },
     lt:{
-        nav_item_dashboard:'Valdymo skydelis',
+        nav_item_brand_dashboard:'Valdymo skydelis',
         nav_item_brand_main:'Pagrindinis',
         nav_item_signup:'Registracija',
         nav_item_login:'Prisijungti',
@@ -46,5 +50,7 @@ export default {
         page_forgotpassword_form_input_label_email:'El. paštas',
         page_forgotpassword_form_input_placeholder_email:'paštas@paštas.com',
         page_forgotpassword_form_button_reset_password:'Atstatyti slaptažodį',
+
+        page_login_page_title:'Prisijungti',
     }
 }
