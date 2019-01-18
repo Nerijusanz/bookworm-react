@@ -16,6 +16,7 @@ const TopDashboardNavigation = ({ isAuthenticated,auth,logout,setLocale }) => (
         </Menu.Item>
 
         <Menu.Menu position="right">
+            <MenuItem><Link to="/"><FormattedMessage id="nav_item_home" /></Link></MenuItem>
             <MenuItem><Link to="dashboard_userbooks"><FormattedMessage id="nav_item_mybooks" /></Link></MenuItem>
             <MenuItem><Link to="dashboard_books"><FormattedMessage id="nav_item_booksapi" /></Link></MenuItem>
             <MenuItem>
