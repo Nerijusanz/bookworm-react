@@ -22,6 +22,7 @@ import AppRoute from './routes/AppRoute';
 // -------------------------Components----------------------------------------------
 import TopDashboardNavigation from './components/navigation/TopDashboardNavigation';
 import FlashMessage from './components/messages/flash/FlashMessage';
+
 // ----------------------------------------------------------------------------------
 
 class App extends Component {
@@ -79,8 +80,11 @@ class App extends Component {
           <Loader loaded={!auth.loading}>
             {appTopDashboardNavigation}
             <div className="ui container">
+
               <FlashMessage/>
+              
               {APPRoute}
+
             </div>
           </Loader>
         </IntlProvider>
