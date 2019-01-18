@@ -2,9 +2,11 @@ import React from 'react';
 import propTypes from 'prop-types';
 
 const InlineError = ({text}) => (
-    <div>
-        <span style={{color:"#ae5856"}}>{text}</span>
-    </div>
+
+    !text ? null : ( 
+        <div className="inline-error">
+            <span style={{color:"#ae5856"}}>{text}</span>
+        </div>)
 );
 
 InlineError.propTypes = {
